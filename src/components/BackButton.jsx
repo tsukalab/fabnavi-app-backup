@@ -11,12 +11,11 @@ class BackButton extends React.Component {
         return (
             <div>
                 <style jsx>{`
-                    img {
-                        width: 65%;
-                        height: 65%;
+                    img{
+                        width: 50%;
                     }
                 `}</style>
-                <a onClick={this.props.back} className="back-button">
+                <a onClick={this.props.back}>
                     <img src="./images/back.png" />
                 </a>
             </div>

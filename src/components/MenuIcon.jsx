@@ -70,9 +70,7 @@ class MenuIcon extends React.Component {
             <div>
                 <style jsx>{`
                     img {
-                        width: 65%;
-                        height: 65%;
-                        margin: 0px;
+                        width: 50%;
                     }
                 `}</style>
                 <a onClick={this.onClick} >

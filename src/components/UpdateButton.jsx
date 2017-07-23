@@ -19,16 +19,15 @@ class UpdateButton extends Component {
             <div>
                 <style jsx>{`
                     img {
-                        width: 65%;
-                        height: 65%;
+                        width: 50%;
                     }
                 `}</style>
-                <div className="updatebutton">
+                <div>
                     {this.props.canUpdatePage ?
-                        <a onClick={this.onClick} className="state-update">
+                        <a onClick={this.onClick}>
                             <img src="./images/update.png" />
                         </a> :
-                        <img className="state-no-update" src="./images/no-update.png" />
+                        <img src="./images/no-update.png" />
                     }
                 </div>
             </div>

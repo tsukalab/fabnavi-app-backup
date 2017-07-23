@@ -21,19 +21,17 @@ class Navigation extends React.Component {
             <div>
                 <style jsx>{`
                     nav {
-                        padding-bottom: 15px;
                         height: 50px;
                         display: flex;
+                        padding-top: 20px;
                     }
                     .logo {
                         display: inline-block;
-                        padding-top: 20px;
                     }
                     img {
-                        padding-top: 20px;
                         height: 100%;
                     }
-                    hr{
+                    hr {
                         width: 100%;
                         border: 0;
                         border-bottom: 1px dashed #ccc;
@@ -41,6 +39,7 @@ class Navigation extends React.Component {
                     }
                     .menu {
                         display: flex;
+                        justify-content: space-between;
                     }
                 `}</style>
                 <nav>
@@ -56,7 +55,7 @@ class Navigation extends React.Component {
                                 <MenuIcon act="sign_out" src="./images/signout.png" />
                                 <MenuIcon className="help" to="/help" src="./images/help.png" />
                                 <UpdateButton/>
-                            </div> :
+                            </div>:
                             <div className="menu">
                                 <BackButton />
                                 <MenuIcon to="/" src="./images/home.png" />
