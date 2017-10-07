@@ -1,0 +1,175 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProjectCard changes the class when hovered 1`] = `
+<div
+  data-jsx={679893488}
+>
+  <div
+    className="project-box "
+    data-jsx={679893488}
+    onClick={undefined}
+  >
+    <div
+      className="thumbnail"
+      data-jsx={679893488}
+    >
+      <img
+        data-jsx={679893488}
+        src="./images/video-thumbnail.png"
+      />
+    </div>
+    <h1
+      className="project-name"
+      data-jsx={679893488}
+      title="sample"
+    >
+      sample
+    </h1>
+    <hr
+      data-jsx={679893488}
+    />
+    <div
+      className="box"
+      data-jsx={679893488}
+    >
+      <img
+        className="user-icon"
+        data-jsx={679893488}
+        src="https://avatars0.githubusercontent.com/u/12455918?v=4"
+      />
+      <div
+        className="username"
+        data-jsx={679893488}
+      />
+      <div
+        className="date"
+        data-jsx={679893488}
+      >
+        
+      </div>
+      <div
+        className="description"
+        data-jsx={679893488}
+      >
+        this is sample project
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ProjectCard changes the class when hovered 2`] = `
+<div
+  data-jsx={679893488}
+>
+  <div
+    className="project-box "
+    data-jsx={679893488}
+    onClick={undefined}
+  >
+    <div
+      className="thumbnail"
+      data-jsx={679893488}
+    >
+      <img
+        data-jsx={679893488}
+        src="./images/video-thumbnail.png"
+      />
+    </div>
+    <h1
+      className="project-name"
+      data-jsx={679893488}
+      title="sample"
+    >
+      sample
+    </h1>
+    <hr
+      data-jsx={679893488}
+    />
+    <div
+      className="box"
+      data-jsx={679893488}
+    >
+      <img
+        className="user-icon"
+        data-jsx={679893488}
+        src="https://avatars0.githubusercontent.com/u/12455918?v=4"
+      />
+      <div
+        className="username"
+        data-jsx={679893488}
+      />
+      <div
+        className="date"
+        data-jsx={679893488}
+      >
+        
+      </div>
+      <div
+        className="description"
+        data-jsx={679893488}
+      >
+        this is sample project
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ProjectCard changes the class when hovered 3`] = `
+<div
+  data-jsx={679893488}
+>
+  <div
+    className="project-box "
+    data-jsx={679893488}
+    onClick={undefined}
+  >
+    <div
+      className="thumbnail"
+      data-jsx={679893488}
+    >
+      <img
+        data-jsx={679893488}
+        src="./images/video-thumbnail.png"
+      />
+    </div>
+    <h1
+      className="project-name"
+      data-jsx={679893488}
+      title="sample"
+    >
+      sample
+    </h1>
+    <hr
+      data-jsx={679893488}
+    />
+    <div
+      className="box"
+      data-jsx={679893488}
+    >
+      <img
+        className="user-icon"
+        data-jsx={679893488}
+        src="https://avatars0.githubusercontent.com/u/12455918?v=4"
+      />
+      <div
+        className="username"
+        data-jsx={679893488}
+      />
+      <div
+        className="date"
+        data-jsx={679893488}
+      >
+        
+      </div>
+      <div
+        className="description"
+        data-jsx={679893488}
+      >
+        this is sample project
+      </div>
+    </div>
+  </div>
+</div>
+`;
