@@ -18,6 +18,7 @@ import ProjectEditForm from './ProjectEditForm';
 import ProjectDetail from './ProjectDetail';
 import Help from './HelpPage';
 import WorkSpace from './WorkSpace';
+import ProjectTagging from './ProjectTagging';
 
 import reducers from '../reducers/index';
 import adjustor from '../middleware/epics/adjustor';
@@ -92,6 +93,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 <Route component={Help} path="/help"/>
                                 <Route component={CreateProject} path="/create"/>
                                 <Route component={ProjectEditForm} path="/edit/:projectId"/>
+                                <Route component={ProjectTagging} path="/tagging"/>
                                 <Route component={ProjectDetail} path="/detail/:projectId"/>
                             </Switch>
                         </ProjectManager>
