@@ -12,6 +12,8 @@ class ProjectTagging extends React.Component {
     constructor(props) {
         super(props);
 
+        this.hasGraph = false;
+
         this.state = {
             url: null,
             playing: false,
@@ -92,12 +94,15 @@ class ProjectTagging extends React.Component {
 
     componentWillUpdate(nextProps) {
 
-        if (nextProps.project.sensor_infos[0].data.data.url.indexOf("left") >= 0) {
-            ChartView.init(this.refs.chart_left, nextProps.project.sensor_infos[0].data.data.url);
-            ChartView.init(this.refs.chart_right, nextProps.project.sensor_infos[1].data.data.url);
-        } else {
-            ChartView.init(this.refs.chart_left, nextProps.project.sensor_infos[1].data.data.url);
-            ChartView.init(this.refs.chart_right, nextProps.project.sensor_infos[0].data.data.url);
+        if (!this.hasGraph) {
+            if (nextProps.project.sensor_infos[0].data.data.url.indexOf("left") >= 0) {
+                ChartView.init(this.refs.chart_left, nextProps.project.sensor_infos[0].data.data.url);
+                ChartView.init(this.refs.chart_right, nextProps.project.sensor_infos[1].data.data.url);
+            } else {
+                ChartView.init(this.refs.chart_left, nextProps.project.sensor_infos[1].data.data.url);
+                ChartView.init(this.refs.chart_right, nextProps.project.sensor_infos[0].data.data.url);
+            }
+            this.hasGraph = true;
         }
     }
 }
@@ -114,6 +119,7 @@ const mapStateToProps = (state) => (
 
 const mapDispatchToProps = (dispatch) => (
     {
+
     }
 );
 
