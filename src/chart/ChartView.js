@@ -4,7 +4,7 @@ const ChartView = function(){
 
 // 表示サイズを設定
 var margin = {
-  top   : 0,
+  top   : 40,
   right : 40,
   bottom: 20,
   left  : 40
@@ -29,7 +29,7 @@ var y = d3.scaleLinear()
 
 var xAxis = d3.axisBottom()
   .scale(x)
-  .tickFormat(d3.timeFormat("%H%M%S"));
+  .tickFormat(d3.timeFormat("%H%M%S%L"));
 
 var yAxis = d3.axisLeft()
   .scale(y)
@@ -83,27 +83,27 @@ for(i = 0; i < 6; i++){
  
      switch(i){
        case 0: 
-         return y(d.ax);
+         return y(d.ax / 3);
        break;
     
        case 1:
-         return y(d.ay);
+         return y(d.ay/ 3);
        break;
 
        case 2:
-         return y(d.az);
+         return y(d.az/ 3);
        break;
   
        case 3:
-         return y(d.gx);
+         return y(d.gx/ 3);
        break;
 
        case 4:
-         return y(d.gy);
+         return y(d.gy/ 3);
        break;
 
        case 5:
-         return y(d.gz);
+         return y(d.gz/ 3);
        break;
      }
  })
@@ -163,14 +163,26 @@ svg.selectAll("circle")
            .enter()
            .append("circle")
            .attr("r", "3px")
-           .attr("cx", line[i].x() )
-           .attr("cy", line[i].y() )
+           .attr("cx", line[i].x())
+           .attr("cy", line[i].y())
            .attr("fill", "rgba(0,0,0,0)")
            .on("click", function(d){
-              ChartActionCreator.selectPlayTime(data[0].date,d.date);
+              
            })
 }
 });
+
+function brushed(brush,x) {
+  if(d3.event.selection != null){
+    if(d3.event.sourceEvent.type == "mouseup"){
+       s = d3.event.selection || x.range();
+       console.log(s.map(x.invert, x)[0].toLocaleString() + ":" + s.map(x.invert, x)[0].getMilliseconds());
+       console.log(s.map(x.invert, x)[1].toLocaleString() + ":" + s.map(x.invert, x)[1].getMilliseconds());
+     }
+  }else {
+    s = null;
+}
+}
 }
 
 function getSelection(){
@@ -179,7 +191,6 @@ return s;
 
 function changeCurrentTime(currentTime,duringTime){
   var x = currentTime * (width / duringTime);
-  console.log(currentTime);  
   playTimeBar.transition()
        .attr("d", playLine([[x,0], [x,height]]));
 }
@@ -224,6 +235,7 @@ function changeCurrentTime(currentTime,duringTime){
 
 return {
   init : init,
+  changeCurrentTime : changeCurrentTime,
 };
 }();
 
