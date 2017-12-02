@@ -11,7 +11,7 @@ var margin = {
 };
 
 var size = {
-  width : 700,
+  width : 600,
   height: 225
 };
 
@@ -186,7 +186,7 @@ function brushed(brush,x) {
 }
 
 function getSelection(){
-return s;
+  return s;
 }
 
 function changeCurrentTime(currentTime,duringTime){
@@ -236,6 +236,7 @@ function changeCurrentTime(currentTime,duringTime){
 return {
   init : init,
   changeCurrentTime : changeCurrentTime,
+  getSelection : getSelection,
 };
 }();
 
