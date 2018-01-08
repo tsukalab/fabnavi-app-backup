@@ -1,7 +1,13 @@
 import { handleActions } from 'redux-actions';
 import Debug from 'debug';
 
-import { CHANGE_PROJECT_LIST_PAGE } from '../actions/manager';
+import {
+    CHANGE_PROJECT_LIST_PAGE,
+    REQUEST_SEARCH_PROJECTS,
+    RECEIVE_SEARCHING_PROJECTS_RESULT,
+    RECEIVE_RELOADED_PROJECTS_RESULT
+} from '../actions/manager';
+
 const debug = Debug('fabnavi:reducer:manager');
 
 const initialState = {
@@ -16,7 +22,8 @@ const initialState = {
     mode: 'home',
     currentPage: 0,
     maxPage: 3,
-    canUpdatePage: false
+    canUpdatePage: false,
+    searchQuery: ''
 };
 
 const updateProjects = (projects, data) => {
@@ -79,7 +86,7 @@ export default handleActions({
         }
     },
     RECEIVE_PROJECTS: (state, action) => {
-        const{  data } = action.payload;
+        const{ data } = action.payload;
         return Object.assign({}, state, {
             projects: updateProjects(state.projects, data),
             canUpdatePage: false,
@@ -99,5 +106,25 @@ export default handleActions({
             canUpdatePage: false,
             isFetching: false
         })
-    }
+    },
+    [RECEIVE_SEARCHING_PROJECTS_RESULT]: (state, action) => {
+        const{ data } = action.payload;
+        return Object.assign({}, state, {
+            projects: updateProjects(data, data),
+            isFetching: false
+        })
+    },
+    [REQUEST_SEARCH_PROJECTS]: (state, action) => {
+        const{ keyword } = action.payload;
+        return Object.assign({}, state, {
+            searchQuery: keyword
+        });
+    },
+    [RECEIVE_RELOADED_PROJECTS_RESULT]: (state, action) => {
+        const{ data } = action.payload;
+        return Object.assign({}, state, {
+            projects: updateProjects(data, data),
+            isFetching: false
+        })
+    },
 }, initialState);

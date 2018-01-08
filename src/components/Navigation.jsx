@@ -5,8 +5,8 @@ import Debug from 'debug';
 import { connect } from 'react-redux';
 
 import MenuIcon from './MenuIcon';
-import UpdateButton from './UpdateButton';
 import BackButton from './BackButton';
+import SearchBar from './SearchBar';
 
 const debug = Debug('fabnavi:jsx:Navigation');
 
@@ -50,7 +50,7 @@ const Navigation = (props) => (
                         <MenuIcon act="sign_out" src="./images/sign-out.png" />
                         <MenuIcon className="help" to="/help" src="./images/help.png" />
                         <MenuIcon className="working-mode" to="/workspace" src="./images/working-mode.png" />
-                        <UpdateButton/>
+                        <SearchBar />
                     </div> :
                     <div className="menu">
                         <BackButton />
@@ -58,7 +58,7 @@ const Navigation = (props) => (
                         <MenuIcon className="help" to="/help" src="./images/help.png" />
                         <MenuIcon act="sign_in" src="./images/sign-in.png" />
                         <MenuIcon className="working-mode" to="/workspace" src="./images/working-mode.png" />
-                        <UpdateButton/>
+                        <SearchBar />
                     </div>
             }
         </nav>

@@ -8,10 +8,19 @@ import {
     FETCHING_PROJECTS,
     FETCH_PROJECTS,
     UPDATE_PROJECT,
+    REQUEST_SEARCH_PROJECTS,
+    RELOAD_PROJECTS,
+    DELETE_PROJECT,
+    CONFIRM_DELETE_PROJECT,
     fetchingProjects,
     fetchProjects,
     receiveProject,
     receiveProjects,
+    receiveSearchProjectsResult,
+    receiveReloadedProjectsResult,
+    openDeleteConfirmation,
+    closeDeleteConfirmation,
+    reloadProjects
 } from '../../actions/manager';
 
 const debug = Debug('fabnavi:epics');
@@ -33,6 +42,16 @@ const fetchOwnProjectsEpic = (action$) =>
     action$.ofType('@@router/LOCATION_CHANGE')
         .filter(action => action.payload.pathname === '/myprojects')
         .map(action => fetchProjects(action.payload, 'myOwn'))
+;
+
+const goBackHomeEpic = (action$, store) =>
+    action$.ofType('@@router/LOCATION_CHANGE')
+        .filter(action => action.payload.pathname === '/')
+        .do(_ => store.dispatch(fetchingProjects()))
+        .switchMap(_ => {
+            return api.fetchAllProjects()
+        })
+        .map(response => receiveProjects(response))
 ;
 
 const fetchProjectEpic = (action$) =>
@@ -78,18 +97,43 @@ const updateProjectEpic = (action$, store) =>
         .ignoreElements()
 ;
 
+const deleteConfirmEpic = (action$, store) =>
+    action$.ofType(CONFIRM_DELETE_PROJECT)
+        .map(action => openDeleteConfirmation(action.payload.projectId))
+;
+
 const deleteProjectEpic = (action$, store) =>
-    action$.ofType('@@router/LOCATION_CHANGE')
-        .filter(action => action.payload.pathname.match('delete'))
+    action$.ofType(DELETE_PROJECT)
         .switchMap((action) => {
-            const projectId = action.payload.pathname.match(/\d+/)[0];
+            const{ projectId } = action.payload;
             return Rx.Observable.fromPromise(api.deleteProject(projectId))
         })
-        .do(_ => {
-            store.dispatch(fetchProjects(0, 'all'))
-            store.dispatch(push('/'))
+        .do(_ => store.dispatch(closeDeleteConfirmation()))
+        .map(_ => reloadProjects())
+;
+
+const searchProjectEpic = (action$, store) =>
+    action$.ofType(REQUEST_SEARCH_PROJECTS)
+        .do(_ => store.dispatch(fetchingProjects()))
+        .switchMap((action) => {
+            const keyword = action.payload.keyword;
+            return api.searchProjects(keyword);
         })
-        .ignoreElements()
+        .map(({ data }) => {
+            return receiveSearchProjectsResult(data);
+        })
+;
+
+const reloadProjectsEpic = (action$, store) =>
+    action$.ofType(RELOAD_PROJECTS)
+        .do(_ => store.dispatch(fetchingProjects()))
+        .switchMap(_ => {
+            const{ searchQuery } = store.getState().manager;
+            return api.reloadProjects(searchQuery);
+        })
+        .map(({ data }) => {
+            return receiveReloadedProjectsResult(data);
+        })
 ;
 
 export default createEpicMiddleware(combineEpics(
@@ -98,6 +142,10 @@ export default createEpicMiddleware(combineEpics(
     fetchProjectsEpic,
     fetchOwnProjectsEpic,
     updateProjectEpic,
+    deleteConfirmEpic,
     deleteProjectEpic,
+    searchProjectEpic,
+    reloadProjectsEpic,
+    goBackHomeEpic,
     changedProjectListPageHookEpic
 ));

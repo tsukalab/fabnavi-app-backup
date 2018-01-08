@@ -298,6 +298,36 @@ class Server {
         });
     }
 
+    async searchProjects(word) {
+        const query = qs.stringify({
+            page : 1,
+            per_page : 20,
+            offset : 0,
+            q: word || ''
+        });
+        const url = `${host}/api/v1/projects?${query}`;
+        return axios({
+            responseType: 'json',
+            method: 'GET',
+            url: url
+        })
+    }
+
+    async reloadProjects(_query) {
+        const query = qs.stringify({
+            page: 1,
+            per_page: 20,
+            offset: 0,
+            q: _query || ''
+        });
+        const url = `${host}/api/v1/projects?${query}`;
+        return axios({
+            responseType: 'json',
+            method: 'GET',
+            url: url
+        })
+    }
+
     async uploadFile( file, name ) {
         debug('uploadFile');
 
