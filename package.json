@@ -69,6 +69,8 @@
     "babel-polyfill": "^6.23.0",
     "bourbon": "^4.3.4",
     "bourbon-neat": "^2.0.0",
+    "c3": "^0.4.18",
+    "d3": "^4.12.2",
     "debug": "^2.6.8",
     "electron-is-dev": "^0.2.0",
     "electron-log": "^2.2.9",

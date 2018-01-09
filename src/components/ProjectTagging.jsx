@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import ReactPlayer from 'react-player'
 import Duration from '../utils/Duration';
+import ChartView from '../chart/ChartView';
 
 class ProjectTagging extends React.Component {
 
@@ -20,6 +21,8 @@ class ProjectTagging extends React.Component {
             played: 0,
             duration: 0,
         }
+
+        this.hasGraph = false;
 
         this.playPause = () => {
             this.setState({ playing: !this.state.playing })
@@ -77,6 +80,9 @@ class ProjectTagging extends React.Component {
                     .elapsed-time{
                         margin-left: 20px;
                     }
+                    .c3-circle {
+                        display: none;
+                    }
                 `}</style>
                 <center>
                     {this.props.project !== null ?
@@ -116,9 +122,22 @@ class ProjectTagging extends React.Component {
                         <label>/</label>
                         <Duration seconds={this.state.duration} />
                     </div>
+                    <div>
+                     <span id="left_chart"></span>
+                    </div>
                 </center>
             </div>
         );
+    }
+
+    componentWillUpdate(nextProps) {
+
+        if (!this.hasGraph) {
+                ChartView.init("#left_chart", nextProps.project.sensor_infos[0].data.data.url);
+             
+            this.hasGraph = true;
+            console.log("hogehoge")
+        }
     }
 }
 
