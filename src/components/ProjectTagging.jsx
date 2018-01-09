@@ -28,6 +28,12 @@ class ProjectTagging extends React.Component {
             muted: false,
             played: 0,
             duration: 0,
+            ax: true,
+            ay: true,
+            az: true,
+            gx: true,
+            gy: true,
+            gz: true,
         }
 
         this.playPause = () => {
@@ -51,13 +57,28 @@ class ProjectTagging extends React.Component {
         }
         this.onProgress = state => {
             this.setState(state)
+
+            var tapTime = this.rightChart.getTapCurrentTime(this.state.duration)
+            console.log(tapTime)
+            if (tapTime != -1) {
+                this.setState({ played: parseFloat(tapTime) })
+                this.refs.player.seekTo(parseFloat(tapTime))
+            }
             this.leftChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
             this.rightChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
         }
         this.createTag = () => {
-            if (this.rightChart.getSelection() != null || this.leftChart.getSelection() != null ) {
+            if (this.rightChart.getSelection() != null || this.leftChart.getSelection() != null) {
                 this.leftTagList.appendTag(this.rightChart.getSelection(), this.refs.tagNameTxt.value)
                 this.rightTagList.appendTag(this.rightChart.getSelection(), this.refs.tagNameTxt.value)
+            }
+        }
+
+        this.onChartItemsChange = e => {
+            if(e.target.checked){
+                this.rightChart.addItem(e.target.id.slice( 0, 2 ))
+              } else {
+                this.rightChart.removeItem(e.target.id.slice( 0, 2 ))
             }
         }
     };
@@ -68,6 +89,36 @@ class ProjectTagging extends React.Component {
                 <style jsx>{`
                     .item{
                         margin-right: 20px;
+                    }
+
+                    .input-range[type="range"] {
+                        -webkit-appearance: none;
+                        appearance: none;
+                        background-color: #c7c7c7;
+                        height: 2px;
+                        width: 400px;
+                        margin-left: 20px;
+                    }
+                    .play-button {
+                        width: 50px;
+                        height: 30px;
+                    }
+                    .input-range::-webkit-slider-thumb {
+                            -webkit-appearance: none;
+                            appearance: none;
+                            cursor: pointer;
+                            position: relative;
+                            border: none;
+                            width: 12px;
+                            height: 12px;
+                            display: block;
+                            background-color: #262626;
+                            border-radius: 50%;
+                            -webkit-border-radius: 50%;
+                          }
+
+                    .elapsed-time{
+                        margin-left: 20px;
                     }
                 `}</style>
                 <center>
@@ -96,12 +147,17 @@ class ProjectTagging extends React.Component {
                         null
                     }
                     <div>
-                        <button onClick={this.playPause}>{this.state.playing ? 'Pause' : 'Play'}</button>
-                        <input
+                        <button className="play-button" onClick={this.playPause}>{this.state.playing ? 'Pause' : 'Play'}</button>
+                        <input className="input-range"
                             type='range' min={0} max={1} step='any'
                             value={this.state.played}
                             onChange={this.onSeekChange}
                         />
+                        <Duration className="elapsed-time"
+                            seconds={this.state.duration * this.state.played}
+                        />
+                        <label>/</label>
+                        <Duration seconds={this.state.duration} />
                     </div>
                     <div>
                         <svg id="tagList_left" ref="tagList_left"></svg>
@@ -113,21 +169,27 @@ class ProjectTagging extends React.Component {
                     </div>
                     <div>
                         <label className="item">
+                            <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange}/>
                             <font color="#f28c36">加速度X</font>
                         </label>
                         <label className="item">
+                            <input id="ay_checkbox" type="checkbox" defaultChecked={this.state.ay} onChange={this.onChartItemsChange}/>
                             <font color="#e54520">加速度Y</font>
                         </label>
                         <label className="item">
+                            <input id="az_checkbox" type="checkbox" defaultChecked={this.state.az} onChange={this.onChartItemsChange}/>
                             <font color="#629ac9">加速度Z</font>
                         </label>
                         <label className="item">
+                            <input id="gx_checkbox" type="checkbox" defaultChecked={this.state.gx} onChange={this.onChartItemsChange}/>
                             <font color="&quot;#cfe43f">角速度X</font>
                         </label>
                         <label className="item">
+                            <input id="gy_checkbox" type="checkbox" defaultChecked={this.state.gy} onChange={this.onChartItemsChange}/>
                             <font color="#CCCC00">角速度Y</font>
                         </label>
                         <label className="item">
+                            <input id="gz_checkbox" type="checkbox" defaultChecked={this.state.gz} onChange={this.onChartItemsChange}/>
                             <font color="#8e37ca">角速度Z</font>
                         </label>
                         <tag_form>タグ名:
@@ -165,13 +227,11 @@ class ProjectTagging extends React.Component {
 
 ProjectTagging.propTypes = {
     project: PropTypes.object,
-    currentTime: PropTypes.number,
 };
 
 const mapStateToProps = (state) => (
     {
         project: state.manager.targetProject,
-        currentTime: state.tagging.currentTime,
     }
 );
 

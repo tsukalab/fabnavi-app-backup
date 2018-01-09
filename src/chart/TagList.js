@@ -31,9 +31,7 @@ svg = d3.select(svgElement)
 }
 
 function appendTag( selection, tag ){
-
-console.log("append!");
-
+    
  svg.append("rect")
 .attr("x",selection[0])
 .attr("y",25)

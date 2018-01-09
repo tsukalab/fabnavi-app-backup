@@ -1,243 +1,305 @@
 import * as d3 from "d3";
+import Debug from 'debug';
 
-const ChartView = function(){
+const debug = Debug('fabnavi:chart:chartview');
 
-// 表示サイズを設定
-var margin = {
-  top   : 40,
-  right : 40,
-  bottom: 20,
-  left  : 40
-};
+const ChartView = function () {
 
-var size = {
-  width : 600,
-  height: 225
-};
+  // 表示サイズを設定
+  var margin = {
+    top: 20,
+    right: 40,
+    bottom: 20,
+    left: 40
+  };
 
-var width = size.width - margin.left - margin.right;
-var height = size.height - margin.top - margin.bottom;
+  var size = {
+    width: 600,
+    height: 225
+  };
 
-var data =[];
-var beginTime;
+  var width = size.width - margin.left - margin.right;
+  var height = size.height - margin.top - margin.bottom;
 
-var x = d3.scaleTime()
-  .range([0, width]);
+  var data = [];
+  var beginTime;
 
-var y = d3.scaleLinear()
-  .range([height, 0]);
+  var x = d3.scaleTime()
+    .range([0, width]);
 
-var xAxis = d3.axisBottom()
-  .scale(x)
-  .tickFormat(d3.timeFormat("%H%M%S%L"));
+  var y = d3.scaleLinear()
+    .range([height, 0]);
 
-var yAxis = d3.axisLeft()
-  .scale(y)
-  
-var svg;
-var svg_list = [];
-var svg2 = [];
-var line = [];
-var playTimeBar;
-var playLine;
+  var xAxis = d3.axisBottom()
+    .scale(x)
+    .tickFormat(d3.timeFormat("%H%M%S%L"));
 
-var color_list = ["#f28c36", "#dc5462","#629ac9","#cfe43f","#f8ea2d","#8e37ca"]
+  var yAxis = d3.axisLeft()
+    .scale(y)
 
-var s;
+  var svg;
+  var svg_list = [];
+  var svg2 = [];
+  var line = [];
+  var label = ["ax", "ay", "az", "gx", "gy", "gz"]
+  var playTimeBar;
+  var playLine;
 
-function init( svgElement, sensor_data_url ){
+  var color_list = ["#f28c36", "#dc5462", "#629ac9", "#cfe43f", "#f8ea2d", "#8e37ca"]
 
-d3.text(sensor_data_url, function(error, text) { 
-    data = d3.csvParseRows(text, function(d) {
+  var s;
+
+  var prevTapTime = 0;
+  var tapTime = 0;
+
+  function init(svgElement, sensor_data_url) {
+
+    d3.text(sensor_data_url, function (error, text) {
+      data = d3.csvParseRows(text, function (d) {
         return { date: d[0], ax: +d[1], ay: +d[2], az: +d[3], gx: +d[4], gy: +d[5], gz: +d[6] };
-    });
+      });
 
-var parseDate = d3.timeParse("%H%M%S%L");
+      var parseDate = d3.timeParse("%H%M%S%L");
 
-// zoomビヘイビアの設定
-var zoom = d3.zoom()
-  .scaleExtent([0.1, 10])
-  .on("zoom", function(){
-  });
+      // zoomビヘイビアの設定
+      var zoom = d3.zoom()
+        .scaleExtent([0.1, 10])
+        .on("zoom", function () {
+        });
 
-// SVG、縦横軸などの設定
-svg = d3.select(svgElement)
-  .attr("width", size.width)
-  .attr("height", size.height)
-  .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-  .call(zoom);
+      // SVG、縦横軸などの設定
+      svg = d3.select(svgElement)
+        .attr("width", size.width)
+        .attr("height", size.height)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .call(zoom);
 
-var rect = svg.append("rect")
-  .attr("width", size.width)
-  .attr("height", size.height)
-  .style("fill", "none")
-  .style("pointer-events", "all");
+      var rect = svg.append("rect")
+        .attr("width", size.width)
+        .attr("height", size.height)
+        .style("fill", "none")
+        .style("pointer-events", "all");
 
-var i = 0;
+      var i = 0;
 
-for(i = 0; i < 6; i++){
-   line[i] = d3.line()
-  .x(function(d){ return x(d.date); })
-  .y(function(d){ 
- 
-     switch(i){
-       case 0: 
-         return y(d.ax / 3);
-       break;
-    
-       case 1:
-         return y(d.ay/ 3);
-       break;
+      for (i = 0; i < 6; i++) {
+        line[i] = d3.line()
+          .x(function (d) { return x(d.date); })
+          .y(function (d) {
 
-       case 2:
-         return y(d.az/ 3);
-       break;
-  
-       case 3:
-         return y(d.gx/ 3);
-       break;
+            switch (i) {
+              case 0:
+                return y(d.ax / 3);
+                break;
 
-       case 4:
-         return y(d.gy/ 3);
-       break;
+              case 1:
+                return y(d.ay / 3);
+                break;
 
-       case 5:
-         return y(d.gz/ 3);
-       break;
-     }
- })
-}
+              case 2:
+                return y(d.az / 3);
+                break;
+
+              case 3:
+                return y(d.gx / 3);
+                break;
+
+              case 4:
+                return y(d.gy / 3);
+                break;
+
+              case 5:
+                return y(d.gz / 3);
+                break;
+            }
+          })
+      }
 
 
-   playLine = d3.line()
-    .x(function(d){ return d[0]; })
-    .y(function(d){ return d[1]; })
+      playLine = d3.line()
+        .x(function (d) { return d[0]; })
+        .y(function (d) { return d[1]; })
 
-// 描画
-data.forEach(function(d){
-  d.date = parseDate(d.date);
-  d.ax = +d.ax;
-  d.ay = +d.ay;
-  d.az = +d.az;
-  d.gx = +d.gx;
-  d.gy = +d.gy;
-  d.gz = +d.gz;
-});
+      // 描画
+      data.forEach(function (d) {
+        d.date = parseDate(d.date);
+        d.ax = +d.ax;
+        d.ay = +d.ay;
+        d.az = +d.az;
+        d.gx = +d.gx;
+        d.gy = +d.gy;
+        d.gz = +d.gz;
+      });
 
-x.domain(d3.extent(data, function(d){ return d.date; }));
-y.domain([-5,5]);
+      x.domain(d3.extent(data, function (d) { return d.date; }));
+      y.domain([-5, 5]);
 
-for(i = 0; i < 6; i++){
-svg_list[i] = svg.append("path")
-  .datum(data)
-  .attr("class", "line")
-  .attr("stroke", color_list[i])
-  .attr("d", line[i])
-  .attr("fill", "none");
-}
+      for (i = 0; i < 6; i++) {
+        svg_list[i] = svg.append("path")
+          .datum(data)
+          .attr("class", "line")
+          .attr("id", label[i])
+          .attr("stroke", color_list[i])
+          .attr("d", line[i])
+          .attr("fill", "none");
+      }
 
-playTimeBar = svg.append("path")
-    .attr("d", playLine([[0,0], [0,height]])) 
-    .attr("stroke", "#A9A9A9") 
-    .attr("stroke-width", "2px")
-    .attr("fill", "none") 
+      playTimeBar = svg.append("path")
+        .attr("d", playLine([[0, 0], [0, height]]))
+        .attr("stroke", "#A9A9A9")
+        .attr("stroke-width", "2px")
+        .attr("fill", "none")
 
-var brush = d3.brushX()
-    .extent([[0,0], [width,height]])
-    .on("brush end", function(){
-       brushed(brush,x);
-});
+      var brush = d3.brushX()
+        .extent([[0, 0], [width, height]])
+        .on("brush end", function () {
+          brushed(brush, x);
+        });
 
-svg.append("g") //brushグループを作成
+      svg.append("g") //brushグループを作成
         .attr("class", "x brush")
         .call(brush)
         .selectAll(".brush rect")
         .attr("y", -6)
         .attr("height", height + 7);
- 
 
-for(i = 0; i < 6; i++){ 
-svg.selectAll("circle")
-           .data(data)
-           .enter()
-           .append("circle")
-           .attr("r", "3px")
-           .attr("cx", line[i].x())
-           .attr("cy", line[i].y())
-           .attr("fill", "rgba(0,0,0,0)")
-           .on("click", function(d){
-              
-           })
-}
-});
+      for (i = 0; i < 6; i++) {
+        svg.selectAll("circle")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("r", "3px")
+          .attr("cx", line[i].x())
+          .attr("cy", line[i].y())
+          .attr("fill", "rgba(0,0,0,0)")
+          .on("click", function (d) {
+            tapTime = d.date;
+            beginTime = data[0].date;
+          })
+      }
+    });
 
-function brushed(brush,x) {
-  if(d3.event.selection != null){
-    if(d3.event.sourceEvent.type == "mouseup"){
-       s = d3.event.selection || x.range();
-       console.log(s.map(x.invert, x)[0].toLocaleString() + ":" + s.map(x.invert, x)[0].getMilliseconds());
-       console.log(s.map(x.invert, x)[1].toLocaleString() + ":" + s.map(x.invert, x)[1].getMilliseconds());
-     }
-  }else {
-    s = null;
-}
-}
-}
-
-function getSelection(){
-  return s;
-}
-
-function changeCurrentTime(currentTime,duringTime){
-  var x = currentTime * (width / duringTime);
-  playTimeBar.transition()
-       .attr("d", playLine([[x,0], [x,height]]));
-}
-
- function addItem(item){
-}
- 
- function removeItem(item){
-
-  switch(item){
-    case "ax":
-      svg_list[0].remove();
-      svg_list[0] = null;
-    break;
-
-    case "ay":
-      svg_list[1].remove();
-      svg_list[1] = null;
-    break;
-
-    case "az":
-      svg_list[2].remove();
-      svg_list[2] = null;
-    break;
-
-    case "gx":
-      svg_list[3].remove();
-      svg_list[3] = null;
-    break;
-
-    case "gy":
-      svg_list[4].remove();
-      svg_list[4] = null;
-    break;
-
-    case "gz":
-      svg_list[5].remove();
-      svg_list[5] = null;
-    break;
+    function brushed(brush, x) {
+      if (d3.event.selection != null) {
+        if (d3.event.sourceEvent.type == "mouseup") {
+          s = d3.event.selection || x.range();
+          console.log(s.map(x.invert, x)[0].toLocaleString() + ":" + s.map(x.invert, x)[0].getMilliseconds());
+          console.log(s.map(x.invert, x)[1].toLocaleString() + ":" + s.map(x.invert, x)[1].getMilliseconds());
+        }
+      } else {
+        s = null;
+      }
+    }
   }
-}
 
-return {
-  init : init,
-  changeCurrentTime : changeCurrentTime,
-  getSelection : getSelection,
-};
+  function getSelection() {
+    return s;
+  }
+
+  function getTapCurrentTime(duration) {
+    if (tapTime != prevTapTime) {
+      prevTapTime = tapTime;
+      var beginTimeSeconds = (beginTime.getHours() * 360 + beginTime.getMinutes() * 60 + beginTime.getSeconds());
+      var TapTimeSeconds = (tapTime.getHours() * 360 + tapTime.getMinutes() * 60 + tapTime.getSeconds());
+      var seconds = ((TapTimeSeconds - beginTimeSeconds) / (duration));
+      return seconds;
+    } else {
+      prevTapTime = tapTime;
+      return -1;
+    }
+    prevTapTime = tapTime;
+  }
+  function changeCurrentTime(currentTime, duringTime) {
+    var x = currentTime * (width / duringTime);
+    playTimeBar.transition()
+      .attr("d", playLine([[x, 0], [x, height]]));
+  }
+
+  function addItem(item) {
+
+    var active = true
+    var newOpacity = 1
+
+    switch (item) {
+      case "ax":
+        d3.selectAll("#ax").style("opacity", newOpacity);
+        ax.active = active;
+        break;
+
+      case "ay":
+        d3.selectAll("#ay").style("opacity", newOpacity);
+        ay.active = active;
+        break;
+
+      case "az":
+        d3.selectAll("#az").style("opacity", newOpacity);
+        az.active = active;
+        break;
+
+      case "gx":
+        d3.selectAll("#gx").style("opacity", newOpacity);
+        gx.active = active;
+        break;
+
+      case "gy":
+        d3.selectAll("#gy").style("opacity", newOpacity);
+        gy.active = active;
+        break;
+
+      case "gz":
+        d3.selectAll("#gz").style("opacity", newOpacity);
+        gz.active = active;
+        break;
+    }
+  }
+
+  function removeItem(item) {
+
+    var active = false
+    var newOpacity = 0
+
+    switch (item) {
+      case "ax":
+        d3.selectAll("#ax").style("opacity", newOpacity);
+        ax.active = active;
+        break;
+
+      case "ay":
+        d3.selectAll("#ay").style("opacity", newOpacity);
+        ay.active = active;
+        break;
+
+      case "az":
+        d3.selectAll("#az").style("opacity", newOpacity);
+        az.active = active;
+        break;
+
+      case "gx":
+        d3.selectAll("#gx").style("opacity", newOpacity);
+        gx.active = active;
+        break;
+
+      case "gy":
+        d3.selectAll("#gy").style("opacity", newOpacity);
+        gy.active = active;
+        break;
+
+      case "gz":
+        d3.selectAll("#gz").style("opacity", newOpacity);
+        gz.active = active;
+        break;
+    }
+  }
+
+  return {
+    init: init,
+    changeCurrentTime: changeCurrentTime,
+    getSelection: getSelection,
+    getTapCurrentTime: getTapCurrentTime,
+    addItem: addItem,
+    removeItem: removeItem,
+  };
 }();
 
 module.exports = ChartView;
