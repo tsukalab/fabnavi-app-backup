@@ -46,7 +46,7 @@ class ProjectTagging extends React.Component {
         this.onProgress = state => {
             this.setState(state)
         }
-    };
+    }
 
     render() {
         return (
@@ -87,7 +87,7 @@ class ProjectTagging extends React.Component {
                 <center>
                     {this.props.project !== null ?
                         <ReactPlayer
-                            ref={"player"}
+                            ref={'player'}
                             className='react-player'
                             width='50%'
                             height='50%'
@@ -105,8 +105,7 @@ class ProjectTagging extends React.Component {
                             onError={e => console.log('onError', e)}
                             onProgress={this.onProgress}
                             onDuration={duration => this.setState({ duration })}
-                        />
-                        :
+                        /> :
                         null
                     }
                     <div>
@@ -123,7 +122,8 @@ class ProjectTagging extends React.Component {
                         <Duration seconds={this.state.duration} />
                     </div>
                     <div>
-                     <span id="left_chart"></span>
+                        <span id="left_chart"></span>
+                        <span id="right_chart"></span>
                     </div>
                 </center>
             </div>
@@ -132,11 +132,15 @@ class ProjectTagging extends React.Component {
 
     componentWillUpdate(nextProps) {
 
-        if (!this.hasGraph) {
-                ChartView.init("#left_chart", nextProps.project.sensor_infos[0].data.data.url);
-             
+        if(!this.hasGraph) {
+            if(nextProps.project.sensor_infos[0].data.data.url.indexOf('left') >= 0) {
+                ChartView.init('#left_chart', nextProps.project.sensor_infos[0].data.data.url);
+                ChartView.init('#right_chart', nextProps.project.sensor_infos[1].data.data.url);
+            } else {
+                ChartView.init('#left_chart', nextProps.project.sensor_infos[1].data.data.url);
+                ChartView.init('#right_chart', nextProps.project.sensor_infos[0].data.data.url);
+            }
             this.hasGraph = true;
-            console.log("hogehoge")
         }
     }
 }

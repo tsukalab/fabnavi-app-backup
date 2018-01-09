@@ -1,29 +1,34 @@
-import * as c3 from "c3";
+import *as c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
+import *as d3 from 'd3';
 
 const ChartView = function () {
 
-    var chart;
-    var data;
+    let chart;
+    let data;
 
     function init(svgElement, sensor_data_url) {
-	
-        var ax_dataSet =['ax'];
-        var ay_dataSet =['ay'];
-        var az_dataSet =['az'];
-        var gx_dataSet =['gx'];
-        var gy_dataSet =['gy'];
-        var gz_dataSet =['gz'];
+
+        const ax_dataSet = ['ax'];
+        const ay_dataSet = ['ay'];
+        const az_dataSet = ['az'];
+        const gx_dataSet = ['gx'];
+        const gy_dataSet = ['gy'];
+        const gz_dataSet = ['gz'];
 
         d3.text(sensor_data_url, function (error, text) {
             data = d3.csvParseRows(text, function (d) {
-              return { date: d[0], ax: +d[1], ay: +d[2], az: +d[3], gx: +d[4], gy: +d[5], gz: +d[6] };
-        });
- 
-		for( var i = 0 ; i < data.length; i++){ 
-			ax_dataSet.push(data[i].ax);
-		}
+                return { date: d[0], ax: +d[1], ay: +d[2], az: +d[3], gx: +d[4], gy: +d[5], gz: +d[6] };
+            });
+
+            for( let i = 0; i < data.length; i++) {
+                ax_dataSet.push(data[i].ax);
+                ay_dataSet.push(data[i].ay);
+                az_dataSet.push(data[i].az);
+                gx_dataSet.push(data[i].gx);
+                gy_dataSet.push(data[i].gy);
+                gz_dataSet.push(data[i].gz);
+            }
 
             c3.generate({
                 bindto: svgElement,
@@ -39,7 +44,12 @@ const ChartView = function () {
                 },
                 data: {
                     columns: [
-                        ax_dataSet
+                        ax_dataSet,
+                        ay_dataSet,
+                        az_dataSet,
+                        gx_dataSet,
+                        gy_dataSet,
+                        gz_dataSet
                     ]
                 },
                 axis: {
@@ -52,9 +62,6 @@ const ChartView = function () {
                 },
                 tooltip: {
                     show: false
-                },
-                zoom: {
-                    enabled: true
                 },
                 grid: {
                     x: {
@@ -76,7 +83,7 @@ const ChartView = function () {
                 }
             })
         });
-    };
+    }
 
     return {
         init: init,
