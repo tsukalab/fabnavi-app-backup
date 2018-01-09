@@ -16,6 +16,7 @@ import Player from './Player';
 import CreateProject from './CreateProject';
 import ProjectEditForm from './ProjectEditForm';
 import ProjectDetail from './ProjectDetail';
+import ProjectTagging from './ProjectTagging';
 import Help from './HelpPage';
 import WorkSpace from './WorkSpace';
 
@@ -93,6 +94,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 <Route component={CreateProject} path="/create"/>
                                 <Route component={ProjectEditForm} path="/edit/:projectId"/>
                                 <Route component={ProjectDetail} path="/detail/:projectId"/>
+                                <Route component={ProjectTagging} path="/tagging"/>
                             </Switch>
                         </ProjectManager>
                     } />

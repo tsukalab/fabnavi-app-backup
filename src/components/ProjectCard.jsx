@@ -144,6 +144,7 @@ const Menu = ({ isOwn, selectItem }) => {
                     <MenuItem actionName="play" onClick={selectItem} />
                     <MenuItem actionName="detail" onClick={selectItem} />
                     <MenuItem actionName="edit" onClick={selectItem} />
+                    <MenuItem actionName="tagging" onClick={selectItem}/>
                     <MenuItem actionName="delete" onClick={selectItem} />
                 </div> :
                 <div>
