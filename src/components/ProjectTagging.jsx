@@ -1,13 +1,17 @@
 import React from 'react';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import PropTypes from 'prop-types';
 import Debug from 'debug';
 
 import { connect } from 'react-redux';
 
 import ReactPlayer from 'react-player'
-import ChartView from '../chart/ChartView';
+import LeftChartView from '../chart/LeftChartView';
+import RightChartView from '../chart/RightChartView';
 import Duration from '../utils/Duration';
 import TagList from '../chart/TagList';
+
+import 'react-tabs/style/react-tabs.scss';
 
 class ProjectTagging extends React.Component {
 
@@ -15,9 +19,10 @@ class ProjectTagging extends React.Component {
         super(props);
 
         this.hasGraph = false;
+        this.currentShowGraph = 0;
 
-        this.leftChart = ChartView;
-        this.rightChart = ChartView;
+        this.leftChart = LeftChartView;
+        this.rightChart = RightChartView;
         this.leftTagList = TagList;
         this.rightTagList = TagList;
 
@@ -75,11 +80,21 @@ class ProjectTagging extends React.Component {
         }
 
         this.onChartItemsChange = e => {
-            if(e.target.checked){
-                this.rightChart.addItem(e.target.id.slice( 0, 2 ))
-              } else {
-                this.rightChart.removeItem(e.target.id.slice( 0, 2 ))
+            if (e.target.checked) {
+                this.rightChart.addItem(e.target.id.slice(0, 2))
+            } else {
+                this.rightChart.removeItem(e.target.id.slice(0, 2))
             }
+        }
+
+        this.handleSelect = index => {
+            if (index == 0) {
+                this.currentShowGraph = 0;
+            } else if (index == 1) {
+                this.currentShowGraph = 1;
+            }
+
+            this.hasGraph = false
         }
     };
 
@@ -159,48 +174,58 @@ class ProjectTagging extends React.Component {
                         <label>/</label>
                         <Duration seconds={this.state.duration} />
                     </div>
-                    <div>
-                        <svg id="tagList_left" ref="tagList_left"></svg>
-                        <svg id="tagList_right" ref="tagList_right"></svg>
-                    </div>
-                    <div>
-                        <svg id="chart_left" ref="chart_left"></svg>
-                        <svg id="chart_right" ref="chart_right"></svg>
-                    </div>
-                    <div>
-                        <label className="item">
-                            <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange}/>
-                            <font color="#f28c36">加速度X</font>
-                        </label>
-                        <label className="item">
-                            <input id="ay_checkbox" type="checkbox" defaultChecked={this.state.ay} onChange={this.onChartItemsChange}/>
-                            <font color="#e54520">加速度Y</font>
-                        </label>
-                        <label className="item">
-                            <input id="az_checkbox" type="checkbox" defaultChecked={this.state.az} onChange={this.onChartItemsChange}/>
-                            <font color="#629ac9">加速度Z</font>
-                        </label>
-                        <label className="item">
-                            <input id="gx_checkbox" type="checkbox" defaultChecked={this.state.gx} onChange={this.onChartItemsChange}/>
-                            <font color="&quot;#cfe43f">角速度X</font>
-                        </label>
-                        <label className="item">
-                            <input id="gy_checkbox" type="checkbox" defaultChecked={this.state.gy} onChange={this.onChartItemsChange}/>
-                            <font color="#CCCC00">角速度Y</font>
-                        </label>
-                        <label className="item">
-                            <input id="gz_checkbox" type="checkbox" defaultChecked={this.state.gz} onChange={this.onChartItemsChange}/>
-                            <font color="#8e37ca">角速度Z</font>
-                        </label>
-                        <tag_form>タグ名:
-                            <input type="text" name="tag_name_txt" ref="tagNameTxt" />
-                        </tag_form>
-                        <label>
-                            <button onClick={this.createTag}>
-                                作成
-                            </button>
-                        </label>
-                    </div>
+                    <Tabs onSelect={this.handleSelect}>
+                        <TabList>
+                            <Tab>motion</Tab>
+                            <Tab>heart</Tab>
+                        </TabList>
+                        <TabPanel>
+                            <div>
+                                <svg id="tagList_left" ref="tagList_left"></svg>
+                                <svg id="tagList_right" ref="tagList_right"></svg>
+                                <svg id="chart_left" ref="chart_left"></svg>
+                                <svg id="chart_right" ref="chart_right"></svg>
+                            </div>
+                            <div>
+                                <label className="item">
+                                    <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange} />
+                                    <font color="#f28c36">加速度X</font>
+                                </label>
+                                <label className="item">
+                                    <input id="ay_checkbox" type="checkbox" defaultChecked={this.state.ay} onChange={this.onChartItemsChange} />
+                                    <font color="#e54520">加速度Y</font>
+                                </label>
+                                <label className="item">
+                                    <input id="az_checkbox" type="checkbox" defaultChecked={this.state.az} onChange={this.onChartItemsChange} />
+                                    <font color="#629ac9">加速度Z</font>
+                                </label>
+                                <label className="item">
+                                    <input id="gx_checkbox" type="checkbox" defaultChecked={this.state.gx} onChange={this.onChartItemsChange} />
+                                    <font color="&quot;#cfe43f">角速度X</font>
+                                </label>
+                                <label className="item">
+                                    <input id="gy_checkbox" type="checkbox" defaultChecked={this.state.gy} onChange={this.onChartItemsChange} />
+                                    <font color="#CCCC00">角速度Y</font>
+                                </label>
+                                <label className="item">
+                                    <input id="gz_checkbox" type="checkbox" defaultChecked={this.state.gz} onChange={this.onChartItemsChange} />
+                                    <font color="#8e37ca">角速度Z</font>
+                                </label>
+                                <tag_form>タグ名:
+                                    <input type="text" name="tag_name_txt" ref="tagNameTxt" />
+                                </tag_form>
+                                <label>
+                                    <button onClick={this.createTag}>
+                                        作成
+                                    </button>
+                                </label>
+
+                            </div>
+                        </TabPanel>
+                        <TabPanel>
+                            <svg id="chart_heartrate" ref="chart_heartrate"></svg>
+                        </TabPanel>
+                    </Tabs>
                 </center>
             </div >
         );
@@ -209,19 +234,24 @@ class ProjectTagging extends React.Component {
     componentWillUpdate(nextProps) {
 
         if (!this.hasGraph) {
-            if (nextProps.project.sensor_infos[0].data.data.url.indexOf("left") >= 0) {
-                this.leftTagList.init(this.refs.tagList_left);
-                this.rightTagList.init(this.refs.tagList_right);
-                this.leftChart.init(this.refs.chart_left, nextProps.project.sensor_infos[0].data.data.url);
-                this.rightChart.init(this.refs.chart_right, nextProps.project.sensor_infos[1].data.data.url);
-            } else {
-                this.leftTagList.init(this.refs.tagList_left);
-                this.rightTagList.init(this.refs.tagList_right);
-                this.leftChart.init(this.refs.chart_left, nextProps.project.sensor_infos[1].data.data.url);
-                this.rightChart.init(this.refs.chart_right, nextProps.project.sensor_infos[0].data.data.url);
+            if (this.currentShowGraph == 0) {
+                if (nextProps.project.sensor_infos[0].data.data.url.indexOf("left") >= 0) {
+                    this.leftTagList.init(this.refs.tagList_left);
+                    this.rightTagList.init(this.refs.tagList_right);
+                    this.leftChart.init(this.refs.chart_left, nextProps.project.sensor_infos[0].data.data.url);
+                    this.rightChart.init(this.refs.chart_right, nextProps.project.sensor_infos[1].data.data.url);
+                } else {
+                    this.leftTagList.init(this.refs.tagList_left);
+                    this.rightTagList.init(this.refs.tagList_right);
+                    this.leftChart.init(this.refs.chart_left, nextProps.project.sensor_infos[1].data.data.url);
+                    this.rightChart.init(this.refs.chart_right, nextProps.project.sensor_infos[0].data.data.url);
+                }
+            } else if (this.currentShowGraph == 1) {
+                RightChartView.heartrateViewInit(this.refs.chart_heartrate, nextProps.project.sensor_infos[0].data.data.url);
             }
-            this.hasGraph = true;
         }
+
+        this.hasGraph = true;
     }
 }
 
