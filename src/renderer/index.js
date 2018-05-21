@@ -15,6 +15,7 @@ import Player from './components/Player';
 import CreateProject from './components/CreateProject';
 import ProjectEditForm from './components/ProjectEditForm';
 import ProjectDetail from './components/ProjectDetail';
+import ProjectSensorTag from './components/ProjectSensorTag';
 import Help from './components/HelpPage';
 import WorkSpace from './components/WorkSpace';
 
@@ -96,6 +97,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 <Route component={CreateProject} path="/create"/>
                                 <Route component={ProjectEditForm} path="/edit/:projectId"/>
                                 <Route component={ProjectDetail} path="/detail/:projectId"/>
+                                <Route component={ProjectSensorTag} path="/tag"/>
                             </Switch>
                         </ProjectManager>
                     } />
