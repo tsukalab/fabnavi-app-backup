@@ -51,6 +51,11 @@ export default handleActions({
             contentType
         });
     },
+    UPDATE_CURRENT_TIME: (state, action) => {
+        return Object.assign({}, state, {
+            currentTime: state.currentTime
+        });
+    },
     UPDATE_CALIBRATION: (state, action) => {
         return Object.assign({}, state, {
             config: action.payload
