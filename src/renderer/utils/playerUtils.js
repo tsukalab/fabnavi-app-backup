@@ -57,6 +57,22 @@ export function buildCaptions(captions) {
     }
 }
 
+/**
+ * buildChapters - Videojsのplayer用にChapter Objectを作成して返す
+ *
+ * @param  {Chapter} chapters  VTT用のCueの配列
+ * @return {Object}    Videojsのplayer用のChapter Object
+ */
+export function buildChapters(chapters) {
+    if(!chapters) return;
+    return {
+        kind: 'chapters',
+        srclang: 'ja',
+        label: 'Chapter',
+        mode: 'showing', // <track>のdefault attribute に相当
+        src: getVttUrl(chapters.reverse())
+    }
+}
 
 export function buildFigureUrl(url) {
     return isDev && host.includes('localhost') ? host + url : url;
