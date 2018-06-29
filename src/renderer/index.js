@@ -97,7 +97,7 @@ window.addEventListener('DOMContentLoaded', () => {
                                 <Route component={CreateProject} path="/create"/>
                                 <Route component={ProjectEditForm} path="/edit/:projectId"/>
                                 <Route component={ProjectDetail} path="/detail/:projectId"/>
-                                <Route component={ProjectSensorTag} path="/tag"/>
+                                <Route component={ProjectSensorTag} path="/tag/:projectId"/>
                             </Switch>
                         </ProjectManager>
                     } />
