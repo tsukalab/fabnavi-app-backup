@@ -49,7 +49,7 @@ class VideoPlayer extends React.Component {
                         type: 'video/mp4'
                     }],
                     poster: buildFigureUrl(figure.file.thumb.url),
-                    textTracks: [buildCaptions(figure.captions.filter(caption => caption._destroy !== true)), buildChapters(figure.captions.filter(chapter => chapter._destroy !== true))]
+                    textTracks: [buildCaptions(figure.captions.filter(caption => caption._destroy !== true)), buildChapters(figure.chapters.filter(chapter => chapter._destroy !== true))]
                 }
             };
             const playlistOptions = figures.map(figure => buildPlaylistOption(figure));
