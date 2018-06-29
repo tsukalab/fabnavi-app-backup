@@ -19,6 +19,12 @@ class ProjectDetail extends React.Component {
                 this.props.showEdit(this.props.project.id)
             }
         };
+
+        this.showTag = () => {
+            if(this.props.project) {
+                this.props.showTag(this.props.project.id)
+            }
+        };
     }
 
     render() {
@@ -65,6 +71,7 @@ class ProjectDetail extends React.Component {
                         </div>
                         <BackButton />
                         {isEditable ? <EditButton handleClick={this.showEdit} /> : null }
+                        {isEditable ? <TagButton handleClick={this.showTag} /> : null }
                     </div>
                 ) : (
                     <div> loading project... </div>
@@ -82,6 +89,14 @@ const EditButton = ({ handleClick }) => {
     )
 }
 
+const TagButton = ({ handleClick }) => {
+    return (
+        <div onClick={ () => handleClick() }>
+          Sensor Tags
+        </div>
+    )
+}
+
 ProjectDetail.propTypes = {
     project: PropTypes.object,
     userId: PropTypes.oneOfType([
@@ -89,6 +104,7 @@ ProjectDetail.propTypes = {
         PropTypes.string
     ]),
     showEdit: PropTypes.func,
+    showTag: PropTypes.func,
     userIsAdmin: PropTypes.bool,
 };
 
@@ -104,6 +120,9 @@ const mapDispatchToProps = (dispatch) => (
     {
         showEdit: (projectId) => {
             dispatch(push(`/edit/${projectId}`));
+        },
+        showTag: (projectId) => {
+            dispatch(push(`/tag/${projectId}`));
         }
     }
 )
