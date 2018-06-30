@@ -13,7 +13,7 @@ export default class TagList {
     };
 
     this.size = {
-      width: 600,
+      width: 800,
       height: 50
     };
 

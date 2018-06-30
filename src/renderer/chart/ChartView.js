@@ -15,7 +15,7 @@ export default class ChartView {
         };
 
         this.size = {
-            width: 600,
+            width: 800,
             height: 225
         };
 
