@@ -92,7 +92,7 @@ const EditButton = ({ handleClick }) => {
 const TagButton = ({ handleClick }) => {
     return (
         <div onClick={ () => handleClick() }>
-          Sensor Tags
+          Edit Sensor Tags
         </div>
     )
 }
