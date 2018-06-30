@@ -42,6 +42,7 @@ class ProjectSensorTag extends React.Component {
             gx: true,
             gy: true,
             gz: true,
+            tags: [],
         }
 
         this.playPause = () => {
@@ -79,6 +80,7 @@ class ProjectSensorTag extends React.Component {
             if (this.rightChart.getSelection() != null || this.leftChart.getSelection() != null) {
                 this.leftTagList.appendTag(this.rightChart.getSelection(), this.refs.tagNameTxt.value)
                 this.rightTagList.appendTag(this.rightChart.getSelection(), this.refs.tagNameTxt.value)
+                console.log(this.rightChart.getSelection())
             }
         }
 
@@ -226,7 +228,9 @@ class ProjectSensorTag extends React.Component {
                             </div>
                         </TabPanel>
                         <TabPanel>
+                            <div>
                             <svg id="chart_heartrate" ref="chart_heartrate"></svg>
+                            </div>
                         </TabPanel>
                     </Tabs>
                 </center>
@@ -235,15 +239,18 @@ class ProjectSensorTag extends React.Component {
     }
 
     componentDidMount() {
-        this.leftTagList = new TagList(this.refs.tagList_left);
-        this.rightTagList = new TagList(this.refs.tagList_right);
     }
 
     componentWillUpdate(nextProps) {
 
         if (!this.hasGraph) {
             if (this.currentShowGraph == 0) {
+
+                this.leftTagList = new TagList(this.refs.tagList_left);
+                this.rightTagList = new TagList(this.refs.tagList_right);
+
                 if (nextProps.project.sensor_infos[0].data.url.indexOf("left") >= 0) {
+                    
                     this.leftChart = new ChartView(this.refs.chart_left, nextProps.project.sensor_infos[0].data.url);
                     this.rightChart = new ChartView(this.refs.chart_right, nextProps.project.sensor_infos[1].data.url);
                     this.leftChart.draw()
