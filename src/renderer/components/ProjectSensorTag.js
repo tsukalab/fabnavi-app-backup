@@ -42,7 +42,7 @@ class ProjectSensorTag extends React.Component {
             gx: true,
             gy: true,
             gz: true,
-            tags: [],
+            tags: []
         }
 
         this.playPause = () => {
@@ -251,11 +251,19 @@ class ProjectSensorTag extends React.Component {
         if (!this.hasGraph) {
             if (this.currentShowGraph == 0) {
 
-                this.leftTagList = new TagList(this.refs.tagList_left);
-                this.rightTagList = new TagList(this.refs.tagList_right);
+                if(nextProps.project.id == 435){
+                    this.state.tags = [{"selection": [18.5, 381.5], "tag": "はさみ"}, 
+                    {"selection": [552.5,565.5], "tag": "金槌"},
+                    {"selection": [580.5,599.5], "tag": "金槌"},
+                    {"selection": [609.5,642.5], "tag": "金槌"}, 
+                    {"selection": [647.5, 668.5], "tag": "金槌"},
+                    {"selection": [691.5, 707.55], "tag": "金槌"}]
+                }
+
+                this.leftTagList = new TagList(this.refs.tagList_left, this.state.tags);
+                this.rightTagList = new TagList(this.refs.tagList_right, this.state.tags);
 
                 if (nextProps.project.sensor_infos[0].data.url.indexOf("left") >= 0) {
-                    
                     this.leftChart = new ChartView(this.refs.chart_left, nextProps.project.sensor_infos[0].data.url);
                     this.rightChart = new ChartView(this.refs.chart_right, nextProps.project.sensor_infos[1].data.url);
                     this.leftChart.draw()

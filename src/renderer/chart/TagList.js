@@ -2,7 +2,7 @@ import * as d3 from "d3";
 
 export default class TagList {
 
-  constructor(svgElement) {
+  constructor(svgElement, tagList = []) {
 
     // 表示サイズを設定
     this.margin = {
@@ -25,6 +25,10 @@ export default class TagList {
       .attr("height", this.size.height)
       .append("g")
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
+
+      tagList.forEach(tag => {
+        this.appendTag(tag.selection, tag.tag)
+      });
   }
 
   appendTag(selection, tag) {
@@ -34,15 +38,20 @@ export default class TagList {
       .attr("y", 25)
       .attr("width", selection[1] - selection[0])
       .attr("height", 25)
-      .attr("fill", this.colorGen())
+      .attr("fill", this.colorGen(tag))
 
     this.svg.append("text") // 楕円を追加。以後のメソッドは、この楕円に対しての設定になる<br>
       .attr("x", selection[0])  // x座標を指定<br>
       .attr("y", 10) // y座標を指定<br>
+      .attr("font-size", 13)
       .text(tag)
   }
 
-  colorGen() {
+  colorGen(tag) {
+
+    if(tag == "金槌"){
+      return "#F6A336"
+    }
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
   }
 }
