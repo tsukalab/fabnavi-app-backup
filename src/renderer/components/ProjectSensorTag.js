@@ -73,8 +73,13 @@ class ProjectSensorTag extends React.Component {
                 this.setState({ played: parseFloat(tapTime) })
                 this.refs.player.seekTo(parseFloat(tapTime))
             }
-            this.leftChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
-            this.rightChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
+
+            if (this.currentShowGraph == 0) {
+                this.leftChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
+                this.rightChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
+            } else if (this.currentShowGraph == 1) {
+                this.heartrateChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
+            }
         }
         this.createTag = () => {
             if (this.rightChart.getSelection() != null || this.leftChart.getSelection() != null) {
@@ -229,7 +234,7 @@ class ProjectSensorTag extends React.Component {
                         </TabPanel>
                         <TabPanel>
                             <div>
-                            <svg id="chart_heartrate" ref="chart_heartrate"></svg>
+                                <svg id="chart_heartrate" ref="chart_heartrate"></svg>
                             </div>
                         </TabPanel>
                     </Tabs>
