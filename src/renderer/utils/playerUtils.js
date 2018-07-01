@@ -72,7 +72,7 @@ export function buildCaptions(captions) {
  */
 function createChapterVttText(chapters) {
     const vtt = new Vtt();
-    chapters.forEach(chapter => vtt.add(chapter.start_sec, chapter.end_sec, chapter.name));
+    chapters.forEach(chapter => vtt.add(chapter.start_sec, chapter.end_sec, chapter.text));
     return vtt.toString();
 }
 
