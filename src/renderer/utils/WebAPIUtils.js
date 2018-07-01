@@ -366,6 +366,20 @@ class Server {
             .then(() => debug('sign out: success'))
             .catch((err) => debug('sign out: failed', err))
     }
+
+    async motionDetect(_query) {
+        debug('motionDetect');
+
+        const query = qs.stringify({
+            url: _query,
+        });
+        const url = `http://192.168.11.6/motion/recognition.json?${query}`;
+        return axios({
+            responseType: 'json',
+            method: 'GET',
+            url: url
+        })
+    }
 }
 
 const api = new Server();

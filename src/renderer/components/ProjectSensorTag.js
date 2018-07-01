@@ -12,6 +12,7 @@ import Player from './Player'
 import ChartView from '../chart/ChartView';
 import TagList from '../chart/TagList';
 import Duration from '../utils/Duration';
+import api from '../utils/WebAPIUtils';
 
 const debug = Debug('fabnavi:jsx:ProjectSensorTag');
 
@@ -244,10 +245,16 @@ class ProjectSensorTag extends React.Component {
     }
 
     componentDidMount() {
+        const result = api.motionDetect(
+            //"https://crest-multimedia-web.s3.amazonaws.com/tsuka/fabnavi5/uploads/sensor_info/data/256/2018-01-24_22_18_16_176_right.csv")
+            "https://crest-multimedia-web.s3.amazonaws.com/tsuka/fabnavi5/uploads/sensor_info/data/254/2018-01-24_22_13_07_175_right.csv")
+
+        result.then(response => {
+            console.log(response.data.result)
+        });
     }
 
     componentWillUpdate(nextProps) {
-
         if (!this.hasGraph) {
             if (this.currentShowGraph == 0) {
 
