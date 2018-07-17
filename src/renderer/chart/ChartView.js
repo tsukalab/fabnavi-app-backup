@@ -238,8 +238,6 @@ export default class ChartView {
         }
         this.prevTapTime = this.tapTime;
         return -1;
-
-        this.prevTapTime = this.tapTime;
     }
 
     changeCurrentTime(currentTime, duringTime) {

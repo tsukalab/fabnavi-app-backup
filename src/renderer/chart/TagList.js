@@ -40,18 +40,29 @@ export default class TagList {
       .attr("height", 25)
       .attr("fill", this.colorGen(tag))
 
+
+    var textsize = 13
+
+    if(tag == "hammer") {
+      //textsize = 8
+    }
+
     this.svg.append("text") // 楕円を追加。以後のメソッドは、この楕円に対しての設定になる<br>
       .attr("x", selection[0])  // x座標を指定<br>
       .attr("y", 10) // y座標を指定<br>
-      .attr("font-size", 13)
+      .attr("font-size", textsize)
       .text(tag)
   }
 
   colorGen(tag) {
 
-    if(tag == "金槌"){
+    if(tag == "hammer"){
       return "#F6A336"
+    }else if(tag == "scissors"){
+      return "#008000"
     }
+
+    
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
   }
 }

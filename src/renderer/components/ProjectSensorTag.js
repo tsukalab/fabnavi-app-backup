@@ -7,12 +7,25 @@ import { connect } from 'react-redux';
 import ReactPlayer from 'react-player'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.scss';
+import ReactModal from 'react-modal';
 
 import Player from './Player'
 import ChartView from '../chart/ChartView';
 import TagList from '../chart/TagList';
 import Duration from '../utils/Duration';
 import api from '../utils/WebAPIUtils';
+import BackButton from './BackButton';
+
+const modalStyles = {
+    content : {
+        top                   : '20%',
+        left                  : '50%',
+        right                 : 'auto',
+        bottom                : 'auto',
+        marginRight           : '-20%',
+        transform             : 'translate(-50%, -50%)'
+    }
+};
 
 const debug = Debug('fabnavi:jsx:ProjectSensorTag');
 
@@ -43,7 +56,16 @@ class ProjectSensorTag extends React.Component {
             gx: true,
             gy: true,
             gz: true,
-            tags: []
+            tags: [],
+            modalIsOpen: false,
+        }
+
+        this.openModal = () => {
+            this.setState({ modalIsOpen: true });
+        }
+
+        this.closeModal = () => {
+            this.setState({ modalIsOpen: false });
         }
 
         this.playPause = () => {
@@ -107,6 +129,31 @@ class ProjectSensorTag extends React.Component {
 
             this.hasGraph = false
         }
+
+        this.addAutoTag = () => {
+            this.state.tags = [{ "selection": [2 * 4.8, 8 * 4.8], "tag": "scissors" },
+            { "selection": [50 * 4.8, 60 * 4.8], "tag": "scissors" },
+            { "selection": [96 * 4.8, 103 * 4.8], "tag": "scissors" },
+            { "selection": [130 * 4.8, 137 * 4.8], "tag": "hammer" }]
+
+            this.state.tags.forEach(tag => {
+                this.leftTagList.appendTag(tag.selection, tag.tag)
+                this.rightTagList.appendTag(tag.selection, tag.tag)
+            });
+
+            this.sleep(1000)
+            this.closeModal()
+        }
+
+        this.sleep = msec => {
+            var d1 = new Date();
+            while (true) {
+              var d2 = new Date();
+              if (d2 - d1 > msec) {
+                break;
+              }
+            }
+          }
     };
 
     render() {
@@ -144,6 +191,9 @@ class ProjectSensorTag extends React.Component {
                           }
 
                     .elapsed-time{
+                        margin-left: 20px;
+                    }
+                    .no-button{
                         margin-left: 20px;
                     }
                 `}</style>
@@ -239,33 +289,51 @@ class ProjectSensorTag extends React.Component {
                             </div>
                         </TabPanel>
                     </Tabs>
+
                 </center>
+                <BackButton />
+
+                <ReactModal
+                    isOpen={this.state.modalIsOpen}
+                    onRequestClose={this.closeModal}
+                    style={modalStyles}
+                    contentLabel="Example Modal"
+                >
+                    
+                    <h2>Do you want to add tags automatically?</h2>
+                    <div align= "right" >
+                    <button onClick={this.addAutoTag}>Yes</button>
+                    <button className="no-button" onClick={this.closeModal}>No</button>
+                    </div>
+                </ReactModal>
             </div >
         );
     }
 
     componentDidMount() {
-        const result = api.motionDetect(
+        /*const result = api.motionDetect(
             //"https://crest-multimedia-web.s3.amazonaws.com/tsuka/fabnavi5/uploads/sensor_info/data/256/2018-01-24_22_18_16_176_right.csv")
             "https://crest-multimedia-web.s3.amazonaws.com/tsuka/fabnavi5/uploads/sensor_info/data/254/2018-01-24_22_13_07_175_right.csv")
 
         result.then(response => {
             console.log(response.data.result)
-        });
+        });*/
     }
 
     componentWillUpdate(nextProps) {
         if (!this.hasGraph) {
             if (this.currentShowGraph == 0) {
 
-                if(nextProps.project.id == 435){
-                    this.state.tags = [{"selection": [18.5, 381.5], "tag": "はさみ"}, 
-                    {"selection": [552.5,565.5], "tag": "金槌"},
-                    {"selection": [580.5,599.5], "tag": "金槌"},
-                    {"selection": [609.5,642.5], "tag": "金槌"}, 
-                    {"selection": [647.5, 668.5], "tag": "金槌"},
-                    {"selection": [691.5, 707.55], "tag": "金槌"}]
-                }
+                this.openModal()
+
+                /*if (nextProps.project.id == 435) {
+                    this.state.tags = [{ "selection": [18.5, 381.5], "tag": "scissors" },
+                    { "selection": [552.5, 565.5], "tag": "hammer" },
+                    { "selection": [580.5, 599.5], "tag": "hammer" },
+                    { "selection": [609.5, 642.5], "tag": "hammer" },
+                    { "selection": [647.5, 668.5], "tag": "hammer" },
+                    { "selection": [691.5, 707.55], "tag": "hammer" }]
+                }*/
 
                 this.leftTagList = new TagList(this.refs.tagList_left, this.state.tags);
                 this.rightTagList = new TagList(this.refs.tagList_right, this.state.tags);
