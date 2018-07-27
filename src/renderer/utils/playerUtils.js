@@ -9,7 +9,6 @@ function createBlobUrl(content, { mimetype = 'text/plain' }) {
     return URL.createObjectURL(blob);
 }
 
-
 /**
 * @typedef {Object} Caption
 * @property {Number} start_sec start is described in sec
@@ -20,23 +19,32 @@ function createBlobUrl(content, { mimetype = 'text/plain' }) {
 /**
  * createVttText - description
  *
- * @param  {Caption[]} captions VTT用のCueの配列
+ * @param  {TextTrack[]} textTracks VTT用のCueの配列
+ * @param  {String} type Text Trackの種類
  * @return {String}     VTTの文字列
  */
-function createVttText(captions) {
+function createVttText(textTracks, type) {
     const vtt = new Vtt();
-    captions.reverse().forEach(caption => vtt.add(caption.start_sec, caption.end_sec, caption.text));
+    switch (type) {
+        case 'captions':
+            textTracks.reverse().forEach(textTrack => vtt.add(textTrack.start_sec, textTrack.end_sec, textTrack.text));
+            break;
+        case 'chapters':
+            textTracks.forEach(textTrack => vtt.add(textTrack.start_sec, textTrack.end_sec, textTrack.name));
+            break;
+    }
     return vtt.toString();
 }
 
 /**
  * getVttUrl - description
  *
- * @param  {Caption[]} captions VTT用のCueの配列
+ * @param  {TextTrack[]} textTracks VTT用のCueの配列
+ * @param  {String} type Text Trackの種類
  * @return {String}     Blob URL
  */
-function getVttUrl(captions) {
-    return createBlobUrl(createVttText(captions), 'text/vtt');
+function getVttUrl(textTracks, type) {
+    return createBlobUrl(createVttText(textTracks, type), 'text/vtt');
 }
 
 
@@ -53,37 +61,8 @@ export function buildCaptions(captions) {
         srclang: 'ja',
         label: '日本語',
         mode: 'showing', // <track>のdefault attribute に相当
-        src: getVttUrl(captions)
+        src: getVttUrl(captions, 'captions')
     }
-}
-
-/**
-* @typedef {Object} Chapter
-* @property {Number} start_sec start is described in sec
-* @property {Number} end_sec end is described in sec
-* @property {String} name name is json or
- */
-
-/**
- * createChapterVttText - description
- *
- * @param  {Chapter[]} chapters VTT用のCueの配列
- * @return {String}     VTTの文字列
- */
-function createChapterVttText(chapters) {
-    const vtt = new Vtt();
-    chapters.forEach(chapter => vtt.add(chapter.start_sec, chapter.end_sec, chapter.text));
-    return vtt.toString();
-}
-
-/**
- * getChapterVttUrl - description
- *
- * @param  {Chapter[]} chapters VTT用のCueの配列
- * @return {String}     Blob URL
- */
-function getChapterVttUrl(chapters) {
-    return createBlobUrl(createChapterVttText(chapters), 'text/vtt');
 }
 
 /**
@@ -99,10 +78,23 @@ export function buildChapters(chapters) {
         srclang: 'ja',
         label: 'Chapter',
         mode: 'showing', // <track>のdefault attribute に相当
-        src: getChapterVttUrl(chapters)
+        src: getVttUrl(chapters, 'chapters')
     }
 }
 
 export function buildFigureUrl(url) {
     return isDev && host.url.includes('localhost') ? host.url + url : url;
+}
+
+
+/**
+ * secondsToHHMMSS - 秒数をHH:MM:SSのstringに変換する
+ * based on : https://stackoverflow.com/questions/1322732/convert-seconds-to-hh-mm-ss-with-javascript#comment57297644_25279340
+ *
+ * @param  {Number} seconds 秒数
+ * @return {String}         'HH:MM:SS'形式のstring
+ */
+export function secondsToHHMMSS(seconds) {
+    if(typeof seconds !== 'number') return '00:00:00';
+    return new Date(seconds * 1000).toISOString().substr(11, 8);
 }

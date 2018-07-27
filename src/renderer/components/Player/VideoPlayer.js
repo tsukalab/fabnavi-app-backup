@@ -2,26 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Debug from 'debug';
-import videojs from 'video.js'
+import videojs from 'video.js';
 import 'videojs-playlist';
 import 'videojs-markers';
 import 'videojs-markers/dist/videojs.markers.css';
 
+import { VideoPanel } from '../../stylesheets/player/Player';
 import { buildCaptions, buildFigureUrl, buildChapters } from '../../utils/playerUtils'
 
 const debug = Debug('fabnavi:jsx:VideoPlayer');
 
 class VideoPlayer extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
-            isPlaying : false,
+            isPlaying: false,
             index: this.props.index,
-            isSummaryPlaying: false,
-        }
-        this.handleClick = (e) => {
-            debug('event', e)
+            isSummaryPlaying: false
+        };
+        this.handleClick = e => {
+            debug('event', e);
             const video = document.querySelector('video');
             if(this.state.isPlaying) {
                 video.pause();
@@ -30,14 +30,14 @@ class VideoPlayer extends React.Component {
             }
             this.setState({ isPlaying: !this.state.isPlaying });
             return;
-        }
-        this.handleSummaryStatusChange = (e) => {
+        };
+        this.handleSummaryStatusChange = e => {
             if(this.state.isSummaryPlaying) {
                 this.player.playbackRate(1.0);
             }
             this.setState({ isSummaryPlaying: e.target.checked });
-            return
-        }
+            return;
+        };
     }
 
     updateChapterMarkers(figure) {
@@ -54,13 +54,15 @@ class VideoPlayer extends React.Component {
     updatePlaylist(project, index = 0) {
         this.player.playlist([]);
         setTimeout(() => {
-            const figures = project.content.filter(content => content.figure).map(content => content.figure)
-            const buildPlaylistOption = (figure) => {
+            const figures = project.content.filter(content => content.figure).map(content => content.figure);
+            const buildPlaylistOption = figure => {
                 return {
-                    sources: [{
-                        src: buildFigureUrl(figure.file.url),
-                        type: 'video/mp4'
-                    }],
+                    sources: [
+                        {
+                            src: buildFigureUrl(figure.file.url),
+                            type: 'video/mp4'
+                        }
+                    ],
                     poster: buildFigureUrl(figure.file.thumb.url),
                     textTracks: [buildCaptions(figure.captions.filter(caption => caption._destroy !== true)), buildChapters(figure.captions.filter(caption => caption._destroy !== true))]
                 }
@@ -72,7 +74,7 @@ class VideoPlayer extends React.Component {
                 this.player.playlist.currentItem(index);
                 setTimeout(() => this.player.currentTime(currentMinus5Sec), 0);
             }, 0);
-        })
+        });
     }
 
     componentDidMount() {
@@ -81,26 +83,26 @@ class VideoPlayer extends React.Component {
         this.player.markers({markers: []});
         this.updateChapterMarkers(this.props.project.content.filter(content => content.figure).map(content => content.figure)[0]);
         this.updatePlaylist(this.props.project);
-        this.player.playlist.autoadvance(0)
+        this.player.playlist.autoadvance(0);
         this.player.on('play', () => {
             this.props.videoChanged(this.player.playlist.currentIndex());
             this.setState({ index: this.player.playlist.currentIndex() });
-        })
+        });
         this.player.on('timeupdate', () => {
-            if (this.state.isSummaryPlaying) {
-                if(this.player.textTracks().tracks_[0].activeCues_.length > 0){
+            if(this.state.isSummaryPlaying) {
+                if(this.player.textTracks().tracks_[0].activeCues_.length > 0) {
                     this.player.playbackRate(1.0);
                 } else {
                     this.player.playbackRate(8.0);
                 }
             }
-        })
+        });
     }
 
     // destroy player on unmount
     componentWillUnmount() {
         if(this.player) {
-            this.player.dispose()
+            this.player.dispose();
         }
     }
 
@@ -116,44 +118,41 @@ class VideoPlayer extends React.Component {
     // so videojs won't create additional wrapper in the DOM
     // see https://github.com/videojs/video.js/pull/3856
     render() {
-        const dataSetup = this.props.size === 'small' ?
-            '{ "playbackRates": [0.5, 1, 1.5, 2, 4, 8, 16, 32], "width": 720, "height": 405 }' :
-            '{ "playbackRates": [0.5, 1, 1.5, 2, 4, 8, 16, 32], "width": 1280, "height": 640 }';
+        const dataSetup =
+            this.props.size === 'small' ?
+                '{ "playbackRates": [0.5, 1, 1.5, 2, 4, 8, 16, 32], "width": 720, "height": 405 }' :
+                '{ "playbackRates": [0.5, 1, 1.5, 2, 4, 8, 16, 32], "width": 1280, "height": 640 }';
         return (
             <div>
-            <div
-                onClick={this.handleClick}
-                onContextMenu={this.handleClick}
-                style={{ display: 'table-cell' }}
-                data-update={this.props.toggleUpdate}
-            >
-                <div data-vjs-player>
-                    <video ref={ node => (this.videoNode = node) }
-                        data-setup={dataSetup}
-                        id='video'
-                        className="video-js"
-                        controls={true}
-                        preload='auto'
-                    >
-                    </video>
+                <div
+                    onClick={this.handleClick}
+                    onContextMenu={this.handleClick}
+                    style={{ display: 'table-cell' }}
+                    data-update={this.props.toggleUpdate}
+                >
+                    <div data-vjs-player>
+                        <VideoPanel
+                            innerRef={node => (this.videoNode = node)}
+                            data-setup={dataSetup}
+                            id="video"
+                            className="video-js"
+                            controls={true}
+                            preload="auto"
+                        />
+                    </div>
                 </div>
-            </div>
-            <div className="field_summary">
-                    <p className="summary">
-                        Summary Play
-                    </p>
+                <div className="field_summary">
+                    <p className="summary">Summary Play</p>
                     <input onChange={this.handleSummaryStatusChange} type="checkbox" />
                 </div>
             </div>
-        )
+        );
     }
 }
 
-const mapStateToProps = (state) => (
-    {
-        project: state.player.project
-    }
-);
+const mapStateToProps = state => ({
+    project: state.player.project
+});
 
 VideoPlayer.propTypes = {
     project: PropTypes.object,

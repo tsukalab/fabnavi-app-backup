@@ -7,16 +7,17 @@ import Player from './Player';
 import BackButton from './BackButton';
 
 import { sanitizeProject } from '../utils/projectUtils';
-import { colors, spaces } from '../stylesheets/config.js';
+
+import { PageLayout, ProjectTitle, ProjectDescription } from '../stylesheets/application/ProjectDetail';
+
 const debug = Debug('fabnavi:jsx:ProjectDetail');
 
 class ProjectDetail extends React.Component {
-
     constructor(props) {
         super(props);
         this.showEdit = () => {
             if(this.props.project) {
-                this.props.showEdit(this.props.project.id)
+                this.props.showEdit(this.props.project.id);
             }
         };
 
@@ -30,49 +31,21 @@ class ProjectDetail extends React.Component {
     render() {
         if(!this.props.project) return <div />;
         const project = sanitizeProject(this.props.project);
-        const isEditable = this.props.userIsAdmin || (project.user.id === this.props.userId);
+        const isEditable = this.props.userIsAdmin || project.user.id === this.props.userId;
         return (
             <div>
-                <style jsx>{`
-                    .detail-page{
-                        width: ${ spaces.solidWidth };
-                        margin-right: auto;
-                        margin-left: auto;
-                    }
-                    .detail-page h1{
-                        font-size: 24px;
-                        color: ${ colors.userNameColor };
-                    }
-                    p {
-                        margin-left: 10px;
-                        color: black;
-                        font-size: 20px;
-                    }
-                    .project-name {
-                        font-size:17pt;
-                        margin: 5px auto;
-                        height:30px;
-                        text-align: center;
-                    }
-                    .detail-description {
-                        display: flex;
-                    }
-                `}</style>
                 {project ? (
-                    <div className="detail-page">
+                    <PageLayout>
                         <Player />
-                        <h1>{project.name}</h1>
+                        <ProjectTitle>{project.name}</ProjectTitle>
                         <hr />
-                        <div className="detail-description">
-                            <div>
-                                <h1>Description</h1>
-                                <p>{project.description}</p>
-                            </div>
+                        <div>
+                            <ProjectDescription>{project.description}</ProjectDescription>
                         </div>
                         <BackButton />
                         {isEditable ? <EditButton handleClick={this.showEdit} /> : null }
                         {isEditable ? <TagButton handleClick={this.showTag} /> : null }
-                    </div>
+                    </PageLayout>
                 ) : (
                     <div> loading project... </div>
                 )}
@@ -82,12 +55,12 @@ class ProjectDetail extends React.Component {
 }
 
 const EditButton = ({ handleClick }) => {
-    return (
-        <div onClick={ () => handleClick() }>
-          Edit Figures
-        </div>
-    )
-}
+    return <div onClick={() => handleClick()}>Edit Project</div>;
+};
+
+EditButton.propTypes = {
+    handleClick: PropTypes.func
+};
 
 const TagButton = ({ handleClick }) => {
     return (
@@ -99,32 +72,28 @@ const TagButton = ({ handleClick }) => {
 
 ProjectDetail.propTypes = {
     project: PropTypes.object,
-    userId: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string
-    ]),
+    userId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     showEdit: PropTypes.func,
     showTag: PropTypes.func,
     userIsAdmin: PropTypes.bool,
 };
 
-const mapStateToProps = (state) => (
-    {
-        project: state.manager.targetProject,
-        userId: state.user.id,
-        userIsAdmin: state.user.isAdmin,
-    }
-);
+const mapStateToProps = state => ({
+    project: state.manager.targetProject,
+    userId: state.user.id,
+    userIsAdmin: state.user.isAdmin
+});
 
-const mapDispatchToProps = (dispatch) => (
-    {
+const mapDispatchToProps = dispatch => ({
         showEdit: (projectId) => {
             dispatch(push(`/edit/${projectId}`));
         },
         showTag: (projectId) => {
             dispatch(push(`/tag/${projectId}`));
         }
-    }
-)
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectDetail);
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(ProjectDetail);
