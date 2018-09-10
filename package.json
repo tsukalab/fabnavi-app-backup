@@ -92,8 +92,8 @@
         "vtt-creator": "^1.1.1"
     },
     "build": {
-        "appId": "com.github.fabnavi.fabnavi-app",
-        "productName": "fabnavi",
+        "appId": "com.github.fabnavi.fabnavi-app-sensor",
+        "productName": "fabnavi-sensor",
         "mac": {
             "category": "your.app.category.type"
         },

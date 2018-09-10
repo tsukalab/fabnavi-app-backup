@@ -30,7 +30,7 @@ function createVttText(textTracks, type) {
             textTracks.reverse().forEach(textTrack => vtt.add(textTrack.start_sec, textTrack.end_sec, textTrack.text));
             break;
         case 'chapters':
-            textTracks.forEach(textTrack => vtt.add(textTrack.start_sec, textTrack.end_sec, textTrack.name));
+            textTracks.forEach(textTrack => vtt.add(textTrack.start_sec, textTrack.end_sec, textTrack.text));
             break;
     }
     return vtt.toString();

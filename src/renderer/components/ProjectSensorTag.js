@@ -291,6 +291,11 @@ class ProjectSensorTag extends React.Component {
                     </Tabs>
 
                 </center>
+                <label>
+                     <button onClick={this.openModal}>
+                        自動タグ付け
+                    </button>
+                </label>
                 <BackButton />
 
                 <ReactModal
@@ -323,9 +328,7 @@ class ProjectSensorTag extends React.Component {
     componentWillUpdate(nextProps) {
         if (!this.hasGraph) {
             if (this.currentShowGraph == 0) {
-
-                this.openModal()
-
+                
                 /*if (nextProps.project.id == 435) {
                     this.state.tags = [{ "selection": [18.5, 381.5], "tag": "scissors" },
                     { "selection": [552.5, 565.5], "tag": "hammer" },
