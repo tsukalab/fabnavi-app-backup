@@ -41,6 +41,7 @@ class TagList extends React.Component {
 
     this.state = {
       svg: null,
+      figures: [],
       tags: [],
       modalIsOpen: false,
       selectTag: null,
@@ -105,7 +106,7 @@ class TagList extends React.Component {
   }
 
   modalYesAction = () => {
-    this.props.removeTag(this.state.selectTag)
+    this.props.removeTag(this.state.selectTag - 1)
     this.remove(this.state.selectTag)
     this.closeModal()
   }

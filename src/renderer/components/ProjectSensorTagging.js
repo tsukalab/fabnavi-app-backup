@@ -9,6 +9,9 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.scss';
 import ReactModal from 'react-modal';
 
+import { SaveButton } from '../stylesheets/application/ProjectEditForm';
+
+import { updateProject } from '../actions/manager';
 import SensorGraph from './SensorGraph/SensorGraph';
 import TagList from './SensorGraph/TagList';
 import Duration from '../utils/Duration';
@@ -161,6 +164,25 @@ class ProjectSensorTagging extends React.Component {
                 }
             }
         }
+
+        this.onSubmit = e => {
+            e.preventDefault();
+            const figures = this.state.figures.map(figure => {
+                const captions = figure.captions.filter(caption => caption.text && !!caption.text.trim())
+                const chapters = figure.chapters.filter(chapter => chapter.name && !!chapter.name.trim() )
+                figure.captions = captions;
+                figure.chapters = chapters;
+                return figure;
+            })
+            this.props.updateProject(
+                Object.assign({}, this.props.project, {
+                    name: this.props.project.name,
+                    description: this.props.project.description,
+                    private: this.props.project.private,
+                    figures: figures
+                })
+            );
+        };
     };
 
     changeCurrentTime = (tapTime) => {
@@ -321,6 +343,7 @@ class ProjectSensorTagging extends React.Component {
                         自動タグ付け
                     </button>
                 </label>
+                <SaveButton type="submit" onClick={this.onSubmit}>save</SaveButton>
 
                 <ReactModal
                     isOpen={this.state.modalIsOpen}
@@ -346,6 +369,14 @@ class ProjectSensorTagging extends React.Component {
         result.then(response => {
             console.log(response.data.result)
         });*/
+    }
+
+    componentWillReceiveProps(props) {
+        if(props.project !== null) {
+            this.setState({
+                figures: props.project.content.map(content => content.figure),
+            });
+        }
     }
 
     componentWillUpdate(nextProps) {
@@ -383,6 +414,7 @@ class ProjectSensorTagging extends React.Component {
 
 ProjectSensorTagging.propTypes = {
     project: PropTypes.object,
+    updateProject: PropTypes.func
 };
 
 const mapStateToProps = (state) => (
@@ -391,4 +423,8 @@ const mapStateToProps = (state) => (
     }
 );
 
-export default connect(mapStateToProps, null)(ProjectSensorTagging);
+export const mapDispatchToProps = dispatch => ({
+    updateProject: project => dispatch(updateProject(project))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectSensorTagging);

@@ -22,7 +22,9 @@ export class ProjectEditForm extends React.Component {
             e.preventDefault();
             const figures = this.state.figures.map(figure => {
                 const captions = figure.captions.filter(caption => caption.text && !!caption.text.trim())
+                const chapters = figure.chapters.filter(chapter => chapter.name && !!chapter.name.trim() )
                 figure.captions = captions;
+                figure.chapters = chapters;
                 return figure;
             })
             this.props.updateProject(
