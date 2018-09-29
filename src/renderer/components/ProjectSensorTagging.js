@@ -87,13 +87,6 @@ class ProjectSensorTagging extends React.Component {
         this.onProgress = state => {
             this.setState(state)
 
-            var tapTime = this.rightChart.getWrappedInstance().getTapCurrentTime(this.state.duration)
-            console.log(tapTime)
-            if (tapTime != -1) {
-                 this.setState({ played: parseFloat(tapTime) })
-                 this.refs.player.seekTo(parseFloat(tapTime))
-            }
-
             if (this.currentShowGraph == 0) {
                 this.leftChart.getWrappedInstance().moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
                 this.rightChart.getWrappedInstance().moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
@@ -150,6 +143,14 @@ class ProjectSensorTagging extends React.Component {
             }
         }
     };
+
+    changeCurrentTime = (tapTime) => {
+        const seconds = (tapTime / this.state.duration);
+         if (tapTime != -1) {
+             this.setState({ played: parseFloat(tapTime) })
+             this.refs.player.seekTo(parseFloat(tapTime))
+         }
+    }
 
     render() {
         return (
@@ -233,9 +234,11 @@ class ProjectSensorTagging extends React.Component {
                 <div>
                     <center>
                         <SensorGraph
-                            data='left' ref={instance => { this.leftChart = instance; }}/>
+                            data='left'
+                            changeCurrentTime={this.changeCurrentTime}
+                            ref={instance => { this.leftChart = instance; }} />
                         <SensorGraph
-                            data='right' ref={instance => { this.rightChart = instance; }}/>
+                            data='right' ref={instance => { this.rightChart = instance; }} />
                     </center>
                 </div>
 
@@ -250,10 +253,6 @@ class ProjectSensorTagging extends React.Component {
         result.then(response => {
             console.log(response.data.result)
         });*/
-    }
-
-    componentWillReceiveProps(props) {
-
     }
 
     componentWillUpdate(nextProps) {

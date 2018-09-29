@@ -42,9 +42,6 @@ class SensorGraph extends React.Component {
 
         this.s;
 
-        this.prevTapTime = 0;
-        this.tapTime = 0;
-
         this.x = d3.scaleTime()
             .range([0, this.width]);
 
@@ -198,8 +195,11 @@ class SensorGraph extends React.Component {
                 .attr('cy', this.line[i].y())
                 .attr('fill', 'rgba(0,0,0,0)')
                 .on('click', d => {
-                    this.tapTime = d.date;
-                    this.beginTime = this.state.data[0].date;
+                    const tapTime = d.date;
+                    const beginTime = this.state.data[0].date;
+                    const beginTimeSeconds = (beginTime.getHours() * 360 + beginTime.getMinutes() * 60 + beginTime.getSeconds());
+                    const TapTimeSeconds = (tapTime.getHours() * 360 + tapTime.getMinutes() * 60 + tapTime.getSeconds());
+                    this.props.changeCurrentTime(TapTimeSeconds - beginTimeSeconds);
                 })
         }
     }
@@ -218,18 +218,6 @@ class SensorGraph extends React.Component {
 
     getSelection() {
         return this.s;
-    }
-
-    getTapCurrentTime(duration) {
-        if (this.tapTime != this.prevTapTime) {
-            this.prevTapTime = this.tapTime;
-            const beginTimeSeconds = (beginTime.getHours() * 360 + beginTime.getMinutes() * 60 + beginTime.getSeconds());
-            const TapTimeSeconds = (this.tapTime.getHours() * 360 + this.tapTime.getMinutes() * 60 + this.tapTime.getSeconds());
-            const seconds = ((TapTimeSeconds - beginTimeSeconds) / (duration));
-            return seconds;
-        }
-        this.prevTapTime = this.tapTime;
-        return -1;
     }
 
     moveTimeBar(currentTime, duringTime) {
@@ -456,6 +444,7 @@ class SensorGraph extends React.Component {
 SensorGraph.propTypes = {
     project: PropTypes.object,
     data: PropTypes.string,
+    changeCurrentTime: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
