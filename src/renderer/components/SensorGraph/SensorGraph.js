@@ -40,8 +40,6 @@ class SensorGraph extends React.Component {
 
         this.color_list = ['#f28c36', '#dc5462', '#629ac9', '#cfe43f', '#f8ea2d', '#8e37ca', '#f28c36']
 
-        this.s;
-
         this.x = d3.scaleTime()
             .range([0, this.width]);
 
@@ -207,17 +205,13 @@ class SensorGraph extends React.Component {
     brushed(brush, x) {
         if (d3.event.selection != null) {
             if (d3.event.sourceEvent.type == 'mouseup') {
-                this.s = d3.event.selection || x.range();
-                console.log(this.s.map(x.invert, x)[0].toLocaleString() + ':' + this.s.map(x.invert, x)[0].getMilliseconds());
-                console.log(this.s.map(x.invert, x)[1].toLocaleString() + ':' + this.s.map(x.invert, x)[1].getMilliseconds());
+                this.props.setBrushedRange(d3.event.selection || x.range());
+                //console.log(this.s.map(x.invert, x)[0].toLocaleString() + ':' + this.s.map(x.invert, x)[0].getMilliseconds());
+                //console.log(this.s.map(x.invert, x)[1].toLocaleString() + ':' + this.s.map(x.invert, x)[1].getMilliseconds());
+            }else {
+                this.props.setBrushedRange(null);
             }
-        } else {
-            this.s = null;
         }
-    }
-
-    getSelection() {
-        return this.s;
     }
 
     moveTimeBar(currentTime, duringTime) {
@@ -445,6 +439,7 @@ SensorGraph.propTypes = {
     project: PropTypes.object,
     data: PropTypes.string,
     changeCurrentTime: PropTypes.func,
+    setBrushedRange: PropTypes.func,
 };
 
 const mapStateToProps = state => ({

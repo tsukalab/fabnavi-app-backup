@@ -55,6 +55,7 @@ class ProjectSensorTagging extends React.Component {
             gz: true,
             tags: [],
             modalIsOpen: false,
+            brushedRange: null,
         }
 
         this.openModal = () => {
@@ -152,6 +153,11 @@ class ProjectSensorTagging extends React.Component {
          }
     }
 
+    setBrushedRange = (brushedRange) => {
+        this.setState({brushedRange: brushedRange})
+        console.log(brushedRange)
+    }
+
     render() {
         return (
             <div className="taggingproject">
@@ -236,6 +242,7 @@ class ProjectSensorTagging extends React.Component {
                         <SensorGraph
                             data='left'
                             changeCurrentTime={this.changeCurrentTime}
+                            setBrushedRange={this.setBrushedRange}
                             ref={instance => { this.leftChart = instance; }} />
                         <SensorGraph
                             data='right' ref={instance => { this.rightChart = instance; }} />
