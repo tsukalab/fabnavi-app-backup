@@ -36,8 +36,6 @@ class ProjectSensorTagging extends React.Component {
 
         this.currentShowGraph = 0;
 
-        this.leftChart = null;
-        this.rightChart = null;
         this.heartrateChart = null;
         this.leftTagList = null;
         this.rightTagList = null;
@@ -89,18 +87,18 @@ class ProjectSensorTagging extends React.Component {
         this.onProgress = state => {
             this.setState(state)
 
-            var tapTime = this.rightChart.getTapCurrentTime(this.state.duration)
+            var tapTime = this.rightChart.getWrappedInstance().getTapCurrentTime(this.state.duration)
             console.log(tapTime)
             if (tapTime != -1) {
-                this.setState({ played: parseFloat(tapTime) })
-                this.refs.player.seekTo(parseFloat(tapTime))
+                 this.setState({ played: parseFloat(tapTime) })
+                 this.refs.player.seekTo(parseFloat(tapTime))
             }
 
             if (this.currentShowGraph == 0) {
-                this.leftChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
-                this.rightChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
+                this.leftChart.getWrappedInstance().moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
+                this.rightChart.getWrappedInstance().moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
             } else if (this.currentShowGraph == 1) {
-                this.heartrateChart.changeCurrentTime(this.refs.player.getCurrentTime(), this.state.duration)
+                this.heartrateChart.moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
             }
         }
         this.createTag = () => {
@@ -235,9 +233,9 @@ class ProjectSensorTagging extends React.Component {
                 <div>
                     <center>
                         <SensorGraph
-                            data='left' />
+                            data='left' ref={instance => { this.leftChart = instance; }}/>
                         <SensorGraph
-                            data='right' />
+                            data='right' ref={instance => { this.rightChart = instance; }}/>
                     </center>
                 </div>
 
@@ -255,19 +253,7 @@ class ProjectSensorTagging extends React.Component {
     }
 
     componentWillReceiveProps(props) {
-        if (props.project) {
-            if (props.project.sensor_infos[0].data.url.indexOf("left") >= 0) {
-                this.leftChart = new ChartView(this.refs.chart_left, props.project.sensor_infos[0].data.url);
-                this.rightChart = new ChartView(this.refs.chart_right, props.project.sensor_infos[1].data.url);
-                this.leftChart.draw()
-                this.rightChart.draw()
-            } else {
-                this.leftChart = new ChartView(this.refs.chart_left, props.project.sensor_infos[1].data.url);
-                this.rightChart = new ChartView(this.refs.chart_right, props.project.sensor_infos[0].data.url);
-                this.leftChart.draw()
-                this.rightChart.draw()
-            }
-        }
+
     }
 
     componentWillUpdate(nextProps) {

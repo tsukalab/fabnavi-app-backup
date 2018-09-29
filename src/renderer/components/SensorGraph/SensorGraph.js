@@ -232,7 +232,7 @@ class SensorGraph extends React.Component {
         return -1;
     }
 
-    changeCurrentTime(currentTime, duringTime) {
+    moveTimeBar(currentTime, duringTime) {
         const x = currentTime * (this.width / duringTime);
         this.playTimeBar.transition()
             .attr('d', this.playLine([[x, 0], [x, this.height]]));
@@ -464,5 +464,7 @@ const mapStateToProps = state => ({
 
 export default connect(
     mapStateToProps,
-    null
+    null,
+    null,
+    { withRef: true }
 )(SensorGraph);
