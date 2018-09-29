@@ -10,19 +10,20 @@ import 'react-tabs/style/react-tabs.scss';
 import ReactModal from 'react-modal';
 
 import ChartView from './SensorGraph/ChartView';
+import SensorGraph from './SensorGraph/SensorGraph';
 import TagList from './SensorGraph/TagList';
 import Duration from '../utils/Duration';
 import api from '../utils/WebAPIUtils';
 import BackButton from './BackButton';
 
 const modalStyles = {
-    content : {
-        top                   : '20%',
-        left                  : '50%',
-        right                 : 'auto',
-        bottom                : 'auto',
-        marginRight           : '-20%',
-        transform             : 'translate(-50%, -50%)'
+    content: {
+        top: '20%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-20%',
+        transform: 'translate(-50%, -50%)'
     }
 };
 
@@ -33,7 +34,6 @@ class ProjectSensorTagging extends React.Component {
     constructor(props) {
         super(props);
 
-        this.hasGraph = false;
         this.currentShowGraph = 0;
 
         this.leftChart = null;
@@ -125,8 +125,6 @@ class ProjectSensorTagging extends React.Component {
             } else if (index == 1) {
                 this.currentShowGraph = 1;
             }
-
-            this.hasGraph = false
         }
 
         this.addAutoTag = () => {
@@ -147,12 +145,12 @@ class ProjectSensorTagging extends React.Component {
         this.sleep = msec => {
             var d1 = new Date();
             while (true) {
-              var d2 = new Date();
-              if (d2 - d1 > msec) {
-                break;
-              }
+                var d2 = new Date();
+                if (d2 - d1 > msec) {
+                    break;
+                }
             }
-          }
+        }
     };
 
     render() {
@@ -232,82 +230,17 @@ class ProjectSensorTagging extends React.Component {
                         <label>/</label>
                         <Duration seconds={this.state.duration} />
                     </div>
-                    <Tabs onSelect={this.handleSelect}>
-                        <TabList>
-                            <Tab>motion</Tab>
-                            <Tab>heart</Tab>
-                        </TabList>
-                        <TabPanel>
-                            <div>
-                                <svg id="tagList_left" ref="tagList_left"></svg>
-                                <svg id="tagList_right" ref="tagList_right"></svg>
-                                <svg id="chart_left" ref="chart_left"></svg>
-                                <svg id="chart_right" ref="chart_right"></svg>
-                            </div>
-                            <div>
-                                <label className="item">
-                                    <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange} />
-                                    <font color="#f28c36">加速度X</font>
-                                </label>
-                                <label className="item">
-                                    <input id="ay_checkbox" type="checkbox" defaultChecked={this.state.ay} onChange={this.onChartItemsChange} />
-                                    <font color="#e54520">加速度Y</font>
-                                </label>
-                                <label className="item">
-                                    <input id="az_checkbox" type="checkbox" defaultChecked={this.state.az} onChange={this.onChartItemsChange} />
-                                    <font color="#629ac9">加速度Z</font>
-                                </label>
-                                <label className="item">
-                                    <input id="gx_checkbox" type="checkbox" defaultChecked={this.state.gx} onChange={this.onChartItemsChange} />
-                                    <font color="&quot;#cfe43f">角速度X</font>
-                                </label>
-                                <label className="item">
-                                    <input id="gy_checkbox" type="checkbox" defaultChecked={this.state.gy} onChange={this.onChartItemsChange} />
-                                    <font color="#CCCC00">角速度Y</font>
-                                </label>
-                                <label className="item">
-                                    <input id="gz_checkbox" type="checkbox" defaultChecked={this.state.gz} onChange={this.onChartItemsChange} />
-                                    <font color="#8e37ca">角速度Z</font>
-                                </label>
-                                <tag_form>タグ名:
-                                    <input type="text" name="tag_name_txt" ref="tagNameTxt" />
-                                </tag_form>
-                                <label>
-                                    <button onClick={this.createTag}>
-                                        作成
-                                    </button>
-                                </label>
-
-                            </div>
-                        </TabPanel>
-                        <TabPanel>
-                            <div>
-                                <svg id="chart_heartrate" ref="chart_heartrate"></svg>
-                            </div>
-                        </TabPanel>
-                    </Tabs>
-
                 </center>
-                <label>
-                     <button onClick={this.openModal}>
-                        自動タグ付け
-                    </button>
-                </label>
-                <BackButton />
 
-                <ReactModal
-                    isOpen={this.state.modalIsOpen}
-                    onRequestClose={this.closeModal}
-                    style={modalStyles}
-                    contentLabel="Example Modal"
-                >
-                    
-                    <h2>Do you want to add tags automatically?</h2>
-                    <div align= "right" >
-                    <button onClick={this.addAutoTag}>Yes</button>
-                    <button className="no-button" onClick={this.closeModal}>No</button>
-                    </div>
-                </ReactModal>
+                <div>
+                    <center>
+                        <SensorGraph
+                            data='left' />
+                        <SensorGraph
+                            data='right' />
+                    </center>
+                </div>
+
             </div >
         );
     }
@@ -321,40 +254,52 @@ class ProjectSensorTagging extends React.Component {
         });*/
     }
 
-    componentWillUpdate(nextProps) {
-        if (!this.hasGraph) {
-            if (this.currentShowGraph == 0) {
-                
-                /*if (nextProps.project.id == 435) {
-                    this.state.tags = [{ "selection": [18.5, 381.5], "tag": "scissors" },
-                    { "selection": [552.5, 565.5], "tag": "hammer" },
-                    { "selection": [580.5, 599.5], "tag": "hammer" },
-                    { "selection": [609.5, 642.5], "tag": "hammer" },
-                    { "selection": [647.5, 668.5], "tag": "hammer" },
-                    { "selection": [691.5, 707.55], "tag": "hammer" }]
-                }*/
-
-                this.leftTagList = new TagList(this.refs.tagList_left, this.state.tags);
-                this.rightTagList = new TagList(this.refs.tagList_right, this.state.tags);
-
-                if (nextProps.project.sensor_infos[0].data.url.indexOf("left") >= 0) {
-                    this.leftChart = new ChartView(this.refs.chart_left, nextProps.project.sensor_infos[0].data.url);
-                    this.rightChart = new ChartView(this.refs.chart_right, nextProps.project.sensor_infos[1].data.url);
-                    this.leftChart.draw()
-                    this.rightChart.draw()
-                } else {
-                    this.leftChart = new ChartView(this.refs.chart_left, nextProps.project.sensor_infos[1].data.url);
-                    this.rightChart = new ChartView(this.refs.chart_right, nextProps.project.sensor_infos[0].data.url);
-                    this.leftChart.draw()
-                    this.rightChart.draw()
-                }
-            } else if (this.currentShowGraph == 1) {
-                this.heartrateChart = new ChartView(this.refs.chart_heartrate, nextProps.project.sensor_infos[0].data.url);
-                this.heartrateChart.drawHeartRate();
+    componentWillReceiveProps(props) {
+        if (props.project) {
+            if (props.project.sensor_infos[0].data.url.indexOf("left") >= 0) {
+                this.leftChart = new ChartView(this.refs.chart_left, props.project.sensor_infos[0].data.url);
+                this.rightChart = new ChartView(this.refs.chart_right, props.project.sensor_infos[1].data.url);
+                this.leftChart.draw()
+                this.rightChart.draw()
+            } else {
+                this.leftChart = new ChartView(this.refs.chart_left, props.project.sensor_infos[1].data.url);
+                this.rightChart = new ChartView(this.refs.chart_right, props.project.sensor_infos[0].data.url);
+                this.leftChart.draw()
+                this.rightChart.draw()
             }
         }
+    }
 
-        this.hasGraph = true;
+    componentWillUpdate(nextProps) {
+        //     if (this.currentShowGraph == 0) {
+
+        //         /*if (nextProps.project.id == 435) {
+        //             this.state.tags = [{ "selection": [18.5, 381.5], "tag": "scissors" },
+        //             { "selection": [552.5, 565.5], "tag": "hammer" },
+        //             { "selection": [580.5, 599.5], "tag": "hammer" },
+        //             { "selection": [609.5, 642.5], "tag": "hammer" },
+        //             { "selection": [647.5, 668.5], "tag": "hammer" },
+        //             { "selection": [691.5, 707.55], "tag": "hammer" }]
+        //         }*/
+
+        //         this.leftTagList = new TagList(this.refs.tagList_left, this.state.tags);
+        //         this.rightTagList = new TagList(this.refs.tagList_right, this.state.tags);
+
+        //         if (nextProps.project.sensor_infos[0].data.url.indexOf("left") >= 0) {
+        //             this.leftChart = new ChartView(this.refs.chart_left, nextProps.project.sensor_infos[0].data.url);
+        //             this.rightChart = new ChartView(this.refs.chart_right, nextProps.project.sensor_infos[1].data.url);
+        //             this.leftChart.draw()
+        //             this.rightChart.draw()
+        //         } else {
+        //             this.leftChart = new ChartView(this.refs.chart_left, nextProps.project.sensor_infos[1].data.url);
+        //             this.rightChart = new ChartView(this.refs.chart_right, nextProps.project.sensor_infos[0].data.url);
+        //             this.leftChart.draw()
+        //             this.rightChart.draw()
+        //         }
+        //     } else if (this.currentShowGraph == 1) {
+        //         this.heartrateChart = new ChartView(this.refs.chart_heartrate, nextProps.project.sensor_infos[0].data.url);
+        //         this.heartrateChart.drawHeartRate();
+        //     }
     }
 }
 
@@ -368,9 +313,4 @@ const mapStateToProps = (state) => (
     }
 );
 
-const mapDispatchToProps = (dispatch) => (
-    {
-    }
-);
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectSensorTagging);
+export default connect(mapStateToProps, null)(ProjectSensorTagging);
