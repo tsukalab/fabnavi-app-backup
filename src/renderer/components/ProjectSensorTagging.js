@@ -9,12 +9,10 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.scss';
 import ReactModal from 'react-modal';
 
-import ChartView from './SensorGraph/ChartView';
 import SensorGraph from './SensorGraph/SensorGraph';
 import TagList from './SensorGraph/TagList';
 import Duration from '../utils/Duration';
 import api from '../utils/WebAPIUtils';
-import BackButton from './BackButton';
 
 const modalStyles = {
     content: {
@@ -27,7 +25,7 @@ const modalStyles = {
     }
 };
 
-const debug = Debug('fabnavi:jsx:ProjectSensorTag');
+const debug = Debug('fabnavi:jsx:ProjectSensorTagging');
 
 class ProjectSensorTagging extends React.Component {
 
@@ -128,8 +126,8 @@ class ProjectSensorTagging extends React.Component {
             { "selection": [130 * 4.8, 137 * 4.8], "tag": "hammer" }]
 
             this.state.tags.forEach(tag => {
-                this.leftTagList.appendTag(tag.selection, tag.tag)
-                this.rightTagList.appendTag(tag.selection, tag.tag)
+                this.leftTagList.getWrappedInstance().appendTag(tag.selection, tag.tag)
+                this.rightTagList.getWrappedInstance().appendTag(tag.selection, tag.tag)
             });
 
             this.sleep(1000)
@@ -241,6 +239,12 @@ class ProjectSensorTagging extends React.Component {
 
                 <div>
                     <center>
+                        <TagList
+                            tagList={this.tags}
+                            ref={instance => { this.leftTagList = instance; }} />
+                        <TagList
+                            tagList={this.tags}
+                            ref={instance => { this.rightTagList = instance; }} />
                         <SensorGraph
                             data='left'
                             changeCurrentTime={this.changeCurrentTime}
@@ -288,9 +292,25 @@ class ProjectSensorTagging extends React.Component {
                         </div>
                     </center>
                 </div>
+                <label>
+                    <button onClick={this.openModal}>
+                        自動タグ付け
+                    </button>
+                </label>
 
+                <ReactModal
+                    isOpen={this.state.modalIsOpen}
+                    onRequestClose={this.closeModal}
+                    style={modalStyles}
+                    contentLabel="Example Modal"
+                >
 
-
+                    <h2>Do you want to add tags automatically?</h2>
+                    <div align="right" >
+                        <button onClick={this.addAutoTag}>Yes</button>
+                        <button className="no-button" onClick={this.closeModal}>No</button>
+                    </div>
+                </ReactModal>
             </div >
         );
     }
