@@ -105,9 +105,11 @@ class ProjectSensorTagging extends React.Component {
 
         this.onChartItemsChange = e => {
             if (e.target.checked) {
-                this.rightChart.addItem(e.target.id.slice(0, 2))
+                this.leftChart.getWrappedInstance().addItem(e.target.id.slice(0, 2))
+                this.rightChart.getWrappedInstance().addItem(e.target.id.slice(0, 2))
             } else {
-                this.rightChart.removeItem(e.target.id.slice(0, 2))
+                this.leftChart.getWrappedInstance().removeItem(e.target.id.slice(0, 2))
+                this.rightChart.getWrappedInstance().removeItem(e.target.id.slice(0, 2))
             }
         }
 
@@ -147,14 +149,14 @@ class ProjectSensorTagging extends React.Component {
 
     changeCurrentTime = (tapTime) => {
         const seconds = (tapTime / this.state.duration);
-         if (tapTime != -1) {
-             this.setState({ played: parseFloat(tapTime) })
-             this.refs.player.seekTo(parseFloat(tapTime))
-         }
+        if (tapTime != -1) {
+            this.setState({ played: parseFloat(tapTime) })
+            this.refs.player.seekTo(parseFloat(tapTime))
+        }
     }
 
     setBrushedRange = (brushedRange) => {
-        this.setState({brushedRange: brushedRange})
+        this.setState({ brushedRange: brushedRange })
         console.log(brushedRange)
     }
 
@@ -245,9 +247,49 @@ class ProjectSensorTagging extends React.Component {
                             setBrushedRange={this.setBrushedRange}
                             ref={instance => { this.leftChart = instance; }} />
                         <SensorGraph
-                            data='right' ref={instance => { this.rightChart = instance; }} />
+                            data='right'
+                            changeCurrentTime={this.changeCurrentTime}
+                            setBrushedRange={this.setBrushedRange}
+                            ref={instance => { this.rightChart = instance; }} />
+
+                        <div>
+                            <label className="item">
+                                <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange} />
+                                <font color="#f28c36">加速度X</font>
+                            </label>
+                            <label className="item">
+                                <input id="ay_checkbox" type="checkbox" defaultChecked={this.state.ay} onChange={this.onChartItemsChange} />
+                                <font color="#e54520">加速度Y</font>
+                            </label>
+                            <label className="item">
+                                <input id="az_checkbox" type="checkbox" defaultChecked={this.state.az} onChange={this.onChartItemsChange} />
+                                <font color="#629ac9">加速度Z</font>
+                            </label>
+                            <label className="item">
+                                <input id="gx_checkbox" type="checkbox" defaultChecked={this.state.gx} onChange={this.onChartItemsChange} />
+                                <font color="&quot;#cfe43f">角速度X</font>
+                            </label>
+                            <label className="item">
+                                <input id="gy_checkbox" type="checkbox" defaultChecked={this.state.gy} onChange={this.onChartItemsChange} />
+                                <font color="#CCCC00">角速度Y</font>
+                            </label>
+                            <label className="item">
+                                <input id="gz_checkbox" type="checkbox" defaultChecked={this.state.gz} onChange={this.onChartItemsChange} />
+                                <font color="#8e37ca">角速度Z</font>
+                            </label>
+                            <label>
+                                タグ名:
+                                <input type="text" name="tag_name_txt" ref="tagNameTxt" />
+                            </label>
+                            <label>
+                                <button onClick={this.createTag}> 作成 </button>
+                            </label>
+
+                        </div>
                     </center>
                 </div>
+
+
 
             </div >
         );
