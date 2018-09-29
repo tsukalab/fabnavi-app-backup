@@ -93,6 +93,27 @@ class ProjectSensorTagging extends React.Component {
                 this.heartrateChart.moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
             }
         }
+
+        this.onDuration = duration => {
+            this.setState({ duration })
+            const chapters = this.props.project.content[0].figure.chapters;
+            var tags = [];
+            chapters.forEach(chapter => {
+                var tag = {
+                    "id": chapter.id,
+                    "tag": chapter.name,
+                    "selection": [chapter.start_sec * 650 / duration, chapter.end_sec * 650 / duration]
+                }
+                tags.push(tag);
+            });
+            this.setState({
+                tags: tags
+            });
+
+            this.leftTagList.getWrappedInstance().renderTags(tags)
+            this.rightTagList.getWrappedInstance().renderTags(tags)
+        }
+
         this.createTag = () => {
             if (this.rightChart.getSelection() != null || this.leftChart.getSelection() != null) {
                 this.leftTagList.appendTag(this.rightChart.getSelection(), this.refs.tagNameTxt.value)
@@ -217,7 +238,7 @@ class ProjectSensorTagging extends React.Component {
                             onEnded={() => console.log('End')}
                             onError={e => console.log('onError', e)}
                             onProgress={this.onProgress}
-                            onDuration={duration => this.setState({ duration })}
+                            onDuration={this.onDuration}
                         />
                         :
                         null

@@ -29,6 +29,7 @@ class TagList extends React.Component {
 
     this.state = {
       svg: null,
+      tags: [],
     }
   }
 
@@ -40,12 +41,19 @@ class TagList extends React.Component {
           .attr("height", this.size.height)
           .append("g")
           .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
-    }), () => renderTags();
+    })
   }
 
-  renderTags() {
-    tagList.forEach(tag => {
-       this.appendTag(tag.selection, tag.tag)
+  renderTags(tags) {
+    d3.selectAll("rect").remove()
+    d3.selectAll("text").remove()
+
+    this.state.tags = tags
+
+    console.log(tags);
+
+    tags.forEach(tag => {
+      this.appendTag(tag.selection, tag.tag)
     });
   }
 
@@ -93,7 +101,6 @@ class TagList extends React.Component {
       <div><svg ref={this.onRef}></svg></div>
     );
   }
-
 }
 
 TagList.propTypes = {
