@@ -176,6 +176,10 @@ class ProjectSensorTagging extends React.Component {
         console.log(brushedRange)
     }
 
+    removeTag = (id) => {
+        console.log(id)
+    }
+
     render() {
         return (
             <div className="taggingproject">
@@ -259,9 +263,11 @@ class ProjectSensorTagging extends React.Component {
                     <center>
                         <TagList
                             tagList={this.tags}
+                            removeTag={this.removeTag}
                             ref={instance => { this.leftTagList = instance; }} />
                         <TagList
                             tagList={this.tags}
+                            removeTag={this.removeTag}
                             ref={instance => { this.rightTagList = instance; }} />
                         <SensorGraph
                             data='left'

@@ -2,10 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Debug from 'debug';
 import { connect } from 'react-redux';
+import ReactModal from 'react-modal';
 import * as d3 from "d3";
 
 
 const debug = Debug('fabnavi:jsx:TagList');
+
+const modalStyles = {
+  content: {
+    top: '20%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-20%',
+    transform: 'translate(-50%, -50%)'
+  }
+};
 
 class TagList extends React.Component {
 
@@ -30,6 +42,16 @@ class TagList extends React.Component {
     this.state = {
       svg: null,
       tags: [],
+      modalIsOpen: false,
+      selectTag: null,
+    }
+
+    this.openModal = () => {
+      this.setState({ modalIsOpen: true });
+    }
+
+    this.closeModal = () => {
+      this.setState({ modalIsOpen: false });
     }
   }
 
@@ -44,7 +66,7 @@ class TagList extends React.Component {
     })
   }
 
-  renderTags(tags) {
+  renderTags = (tags) => {
 
     this.state.tags = tags
 
@@ -56,8 +78,9 @@ class TagList extends React.Component {
   appendTag(selection, tag, id) {
 
     this.state.svg.append("rect")
-      .on("click", ()  => {
-        this.removeTag(id)
+      .on("click", () => {
+        this.openModal();
+        this.setState({ selectTag: id })
       })
       .classed("tag" + id, true)
       .attr("x", selection[0])
@@ -81,8 +104,14 @@ class TagList extends React.Component {
       .text(tag)
   }
 
-  removeTag(id){
-    this.state.svg.selectAll('.tag' + id).remove()
+  modalYesAction = () => {
+    this.props.removeTag(this.state.selectTag)
+    this.remove(this.state.selectTag)
+    this.closeModal()
+  }
+
+  remove = (id) => {
+    d3.selectAll('.tag' + id).remove()
   }
 
   colorGen(tag) {
@@ -99,13 +128,32 @@ class TagList extends React.Component {
 
   render() {
     return (
-      <div><svg ref={this.onRef}></svg></div>
+      <div>
+        <svg ref={this.onRef}></svg>
+
+      {this.props.removeTag !== null ?
+      <ReactModal
+        isOpen={this.state.modalIsOpen}
+        onRequestClose={this.closeModal}
+        style={modalStyles}
+        contentLabel="Example Modal"
+      >
+
+        <h2>Do you want to remove tag?</h2>
+        <div align="right" >
+          <button onClick={this.modalYesAction}>Yes</button>
+          <button className="no-button" onClick={this.closeModal}>No</button>
+        </div>
+      </ReactModal>
+    : null}
+      </div>
     );
   }
 }
 
 TagList.propTypes = {
   tagList: PropTypes.array,
+  removeTag: PropTypes.func,
 };
 
 export default connect(
