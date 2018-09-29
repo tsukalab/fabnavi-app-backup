@@ -115,11 +115,8 @@ class ProjectSensorTagging extends React.Component {
         }
 
         this.createTag = () => {
-            if (this.rightChart.getSelection() != null || this.leftChart.getSelection() != null) {
-                this.leftTagList.appendTag(this.rightChart.getSelection(), this.refs.tagNameTxt.value)
-                this.rightTagList.appendTag(this.rightChart.getSelection(), this.refs.tagNameTxt.value)
-                console.log(this.rightChart.getSelection())
-            }
+                this.leftTagList.getWrappedInstance().appendTag(this.state.brushedRange, this.refs.tagNameTxt.value)
+                this.rightTagList.getWrappedInstance().appendTag(this.state.brushedRange, this.refs.tagNameTxt.value)
         }
 
         this.onChartItemsChange = e => {

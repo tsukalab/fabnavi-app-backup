@@ -45,25 +45,21 @@ class TagList extends React.Component {
   }
 
   renderTags(tags) {
-    d3.selectAll("rect").remove()
-    d3.selectAll("text").remove()
 
     this.state.tags = tags
 
-    console.log(tags);
-
     tags.forEach(tag => {
-      this.appendTag(tag.selection, tag.tag)
+      this.appendTag(tag.selection, tag.tag, tag.id)
     });
   }
 
-  appendTag(selection, tag) {
+  appendTag(selection, tag, id) {
 
     this.state.svg.append("rect")
-      .on("click", (d) => {
-        d3.selectAll("rect").remove()
-        d3.selectAll("text").remove()
+      .on("click", ()  => {
+        this.removeTag(id)
       })
+      .classed("tag" + id, true)
       .attr("x", selection[0])
       .attr("y", 25)
       .attr("width", selection[1] - selection[0])
@@ -78,10 +74,15 @@ class TagList extends React.Component {
     }
 
     this.state.svg.append("text") // 楕円を追加。以後のメソッドは、この楕円に対しての設定になる<br>
+      .classed("tag" + id, true)
       .attr("x", selection[0])  // x座標を指定<br>
       .attr("y", 10) // y座標を指定<br>
       .attr("font-size", textsize)
       .text(tag)
+  }
+
+  removeTag(id){
+    this.state.svg.selectAll('.tag' + id).remove()
   }
 
   colorGen(tag) {
