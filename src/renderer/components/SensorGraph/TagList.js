@@ -34,6 +34,10 @@ export default class TagList {
   appendTag(selection, tag) {
 
     this.svg.append("rect")
+      .on("click", (d) => {
+        d3.selectAll("rect").remove()
+        d3.selectAll("text").remove()
+      })
       .attr("x", selection[0])
       .attr("y", 25)
       .attr("width", selection[1] - selection[0])
