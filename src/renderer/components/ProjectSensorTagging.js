@@ -208,6 +208,13 @@ class ProjectSensorTagging extends React.Component {
                     name: this.refs.tagNameTxt.value,
                     _destroy: false
                 });
+                figure.captions.push({
+                    id: null,
+                    start_sec: this.state.brushedRange[0] / 570 * this.state.duration,
+                    end_sec: this.state.brushedRange[1] / 570 * this.state.duration,
+                    text: this.refs.tagNameTxt.value,
+                    _destroy: false
+                });
                 return figure;
             })
         });
@@ -235,7 +242,12 @@ class ProjectSensorTagging extends React.Component {
                 if(i === removeChapterId) chapter._destroy = true;
                 return chapter;
             });
+            const captions = figure.captions.map((caption, i) => {
+                if(i === removeChapterId && caption.id === null) caption._destroy = true;
+                return caption;
+            });
             figure.chapters = chapters;
+            figure.captions = captions;
             return figure;
         });
 
@@ -256,7 +268,8 @@ class ProjectSensorTagging extends React.Component {
         while (hasNumber) {
             random = Math.floor(Math.random() * (65000 + 1));
             var filterTag = this.state.tags.filter(tag => tag.tags_id === random);
-            if(filterTag.length <= 0) hasNumber = false;
+            var filterCaption = this.state.figures[0].captions.filter(caption => caption.id === random);
+            if(filterTag.length <= 0 && filterCaption <= 0) hasNumber = false;
         }
         return random;
     }
