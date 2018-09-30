@@ -57,6 +57,7 @@ class ProjectSensorTagging extends React.Component {
             tags: [],
             modalIsOpen: false,
             brushedRange: null,
+            currentMovie: 0,
         }
 
         this.openModal = () => {
@@ -101,11 +102,12 @@ class ProjectSensorTagging extends React.Component {
             this.setState({ duration })
             const chapters = this.props.project.content[0].figure.chapters;
             var tags = [];
-            chapters.forEach(chapter => {
+            chapters.forEach((chapter, i) => {
                 var tag = {
                     "id": chapter.id,
                     "tag": chapter.name,
-                    "selection": [chapter.start_sec * 650 / duration, chapter.end_sec * 650 / duration]
+                    "selection": [chapter.start_sec * 650 / duration, chapter.end_sec * 650 / duration],
+                    "tags_num": i
                 }
                 tags.push(tag);
             });
@@ -115,11 +117,6 @@ class ProjectSensorTagging extends React.Component {
 
             this.leftTagList.getWrappedInstance().renderTags(tags)
             this.rightTagList.getWrappedInstance().renderTags(tags)
-        }
-
-        this.createTag = () => {
-                this.leftTagList.getWrappedInstance().appendTag(this.state.brushedRange, this.refs.tagNameTxt.value)
-                this.rightTagList.getWrappedInstance().appendTag(this.state.brushedRange, this.refs.tagNameTxt.value)
         }
 
         this.onChartItemsChange = e => {
@@ -169,7 +166,7 @@ class ProjectSensorTagging extends React.Component {
             e.preventDefault();
             const figures = this.state.figures.map(figure => {
                 const captions = figure.captions.filter(caption => caption.text && !!caption.text.trim())
-                const chapters = figure.chapters.filter(chapter => chapter.name && !!chapter.name.trim() )
+                const chapters = figure.chapters.filter(chapter => chapter.name && !!chapter.name.trim())
                 figure.captions = captions;
                 figure.chapters = chapters;
                 return figure;
@@ -198,8 +195,70 @@ class ProjectSensorTagging extends React.Component {
         console.log(brushedRange)
     }
 
+    createTag = () => {
+        var tags_id = this.getRandom();
+
+        this.setState({
+            figures: this.state.figures.map((figure, i) => {
+                if (i !== this.state.currentMovie) return figure;
+                figure.chapters.push({
+                    id: null,
+                    start_sec: this.state.brushedRange[0] / 570 * this.state.duration,
+                    end_sec: this.state.brushedRange[1] / 570 * this.state.duration,
+                    name: this.refs.tagNameTxt.value,
+                    _destroy: false
+                });
+                return figure;
+            })
+        });
+
+        this.state.tags.push({
+            id: tags_id,
+            tag: this.refs.tagNameTxt.value,
+            selection: [this.state.brushedRange[0], this.state.brushedRange[1]],
+            tags_num: this.state.figures[this.state.currentMovie].chapters.length - 1,
+        })
+
+        this.leftTagList.getWrappedInstance().setState({ tags: this.state.tags })
+        this.rightTagList.getWrappedInstance().setState({ tags: this.state.tags })
+        this.leftTagList.getWrappedInstance().appendTag(this.state.brushedRange, this.refs.tagNameTxt.value, tags_id)
+        this.rightTagList.getWrappedInstance().appendTag(this.state.brushedRange, this.refs.tagNameTxt.value, tags_id)
+    }
+
     removeTag = (id) => {
-        console.log(id)
+
+        const removeChapterId = this.state.tags.filter(tag => tag.id === id)[0].tags_num;
+
+        const figures = this.state.figures.map((figure, i) => {
+            if (i !== this.state.currentMovie) return figure;
+            const chapters = figure.chapters.map((chapter, i) => {
+                if(i === removeChapterId) chapter._destroy = true;
+                return chapter;
+            });
+            figure.chapters = chapters;
+            return figure;
+        });
+
+        const tags = this.state.tags.filter(tag => tag.tags_id !== id);
+
+        this.setState({
+            figures: figures,
+            tags: tags,
+        })
+
+        this.leftTagList.getWrappedInstance().setState({ tags: this.state.tags })
+        this.rightTagList.getWrappedInstance().setState({ tags: this.state.tags })
+    }
+
+    getRandom() {
+        var random = 0;
+        var hasNumber = true;
+        while (hasNumber) {
+            random = Math.floor(Math.random() * (65000 + 1));
+            var filterTag = this.state.tags.filter(tag => tag.tags_id === random);
+            if(filterTag.length <= 0) hasNumber = false;
+        }
+        return random;
     }
 
     render() {
@@ -372,7 +431,7 @@ class ProjectSensorTagging extends React.Component {
     }
 
     componentWillReceiveProps(props) {
-        if(props.project !== null) {
+        if (props.project !== null) {
             this.setState({
                 figures: props.project.content.map(content => content.figure),
             });

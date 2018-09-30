@@ -106,7 +106,7 @@ class TagList extends React.Component {
   }
 
   modalYesAction = () => {
-    this.props.removeTag(this.state.selectTag - 1)
+    this.props.removeTag(this.state.selectTag)
     this.remove(this.state.selectTag)
     this.closeModal()
   }
