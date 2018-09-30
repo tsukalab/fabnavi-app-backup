@@ -106,7 +106,7 @@ class ProjectSensorTagging extends React.Component {
                 var tag = {
                     "id": chapter.id,
                     "tag": chapter.name,
-                    "selection": [chapter.start_sec * 650 / duration, chapter.end_sec * 650 / duration],
+                    "selection": [chapter.start_sec * 570 / duration, chapter.end_sec * 570 / duration],
                     "tags_num": i
                 }
                 tags.push(tag);
