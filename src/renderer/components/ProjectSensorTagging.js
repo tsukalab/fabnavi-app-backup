@@ -274,7 +274,7 @@ class ProjectSensorTagging extends React.Component {
         return random;
     }
 
-    renderHeartRate(props){
+    renderHeartRate(props) {
         return (
             <SensorGraph
                 data='heartrate'
@@ -321,6 +321,9 @@ class ProjectSensorTagging extends React.Component {
                     }
                     .no-button{
                         margin-left: 20px;
+                    }
+                    .parent{
+                        display: flex;
                     }
                 `}</style>
                 <center>
@@ -371,25 +374,28 @@ class ProjectSensorTagging extends React.Component {
                         </TabList>
                         <TabPanel>
                             <center>
-                                <TagList
-                                    tagList={this.tags}
-                                    removeTag={this.removeTag}
-                                    ref={instance => { this.leftTagList = instance; }} />
-                                <TagList
-                                    tagList={this.tags}
-                                    removeTag={this.removeTag}
-                                    ref={instance => { this.rightTagList = instance; }} />
-                                <SensorGraph
-                                    data='left'
-                                    changeCurrentTime={this.changeCurrentTime}
-                                    setBrushedRange={this.setBrushedRange}
-                                    ref={instance => { this.leftChart = instance; }} />
-                                <SensorGraph
-                                    data='right'
-                                    changeCurrentTime={this.changeCurrentTime}
-                                    setBrushedRange={this.setBrushedRange}
-                                    ref={instance => { this.rightChart = instance; }} />
-
+                                <div className={"parent"}>
+                                    <TagList
+                                        tagList={this.tags}
+                                        removeTag={this.removeTag}
+                                        ref={instance => { this.leftTagList = instance; }} />
+                                    <TagList
+                                        tagList={this.tags}
+                                        removeTag={this.removeTag}
+                                        ref={instance => { this.rightTagList = instance; }} />
+                                </div>
+                                <div className={"parent"}>
+                                    <SensorGraph
+                                        data='left'
+                                        changeCurrentTime={this.changeCurrentTime}
+                                        setBrushedRange={this.setBrushedRange}
+                                        ref={instance => { this.leftChart = instance; }} />
+                                    <SensorGraph
+                                        data='right'
+                                        changeCurrentTime={this.changeCurrentTime}
+                                        setBrushedRange={this.setBrushedRange}
+                                        ref={instance => { this.rightChart = instance; }} />
+                                </div>
                                 <div>
                                     <label className="item">
                                         <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange} />
