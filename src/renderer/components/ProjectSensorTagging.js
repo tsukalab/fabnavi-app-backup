@@ -239,11 +239,11 @@ class ProjectSensorTagging extends React.Component {
         const figures = this.state.figures.map((figure, i) => {
             if (i !== this.state.currentMovie) return figure;
             const chapters = figure.chapters.map((chapter, i) => {
-                if(i === removeChapterId) chapter._destroy = true;
+                if (i === removeChapterId) chapter._destroy = true;
                 return chapter;
             });
             const captions = figure.captions.map((caption, i) => {
-                if(i === removeChapterId && caption.id === null) caption._destroy = true;
+                if (i === removeChapterId && caption.id === null) caption._destroy = true;
                 return caption;
             });
             figure.chapters = chapters;
@@ -269,9 +269,19 @@ class ProjectSensorTagging extends React.Component {
             random = Math.floor(Math.random() * (65000 + 1));
             var filterTag = this.state.tags.filter(tag => tag.tags_id === random);
             var filterCaption = this.state.figures[0].captions.filter(caption => caption.id === random);
-            if(filterTag.length <= 0 && filterCaption <= 0) hasNumber = false;
+            if (filterTag.length <= 0 && filterCaption <= 0) hasNumber = false;
         }
         return random;
+    }
+
+    renderHeartRate(props){
+        return (
+            <SensorGraph
+                data='heartrate'
+                changeCurrentTime={this.changeCurrentTime}
+                setBrushedRange={this.setBrushedRange}
+                ref={instance => { this.heartrateChart = instance; }} />
+        );
     }
 
     render() {
@@ -354,61 +364,75 @@ class ProjectSensorTagging extends React.Component {
                 </center>
 
                 <div>
-                    <center>
-                        <TagList
-                            tagList={this.tags}
-                            removeTag={this.removeTag}
-                            ref={instance => { this.leftTagList = instance; }} />
-                        <TagList
-                            tagList={this.tags}
-                            removeTag={this.removeTag}
-                            ref={instance => { this.rightTagList = instance; }} />
-                        <SensorGraph
-                            data='left'
-                            changeCurrentTime={this.changeCurrentTime}
-                            setBrushedRange={this.setBrushedRange}
-                            ref={instance => { this.leftChart = instance; }} />
-                        <SensorGraph
-                            data='right'
-                            changeCurrentTime={this.changeCurrentTime}
-                            setBrushedRange={this.setBrushedRange}
-                            ref={instance => { this.rightChart = instance; }} />
+                    <Tabs onSelect={this.handleSelect} forceRenderTabPanel={true}>
+                        <TabList>
+                            <Tab>motion</Tab>
+                            <Tab>heart</Tab>
+                        </TabList>
+                        <TabPanel>
+                            <center>
+                                <TagList
+                                    tagList={this.tags}
+                                    removeTag={this.removeTag}
+                                    ref={instance => { this.leftTagList = instance; }} />
+                                <TagList
+                                    tagList={this.tags}
+                                    removeTag={this.removeTag}
+                                    ref={instance => { this.rightTagList = instance; }} />
+                                <SensorGraph
+                                    data='left'
+                                    changeCurrentTime={this.changeCurrentTime}
+                                    setBrushedRange={this.setBrushedRange}
+                                    ref={instance => { this.leftChart = instance; }} />
+                                <SensorGraph
+                                    data='right'
+                                    changeCurrentTime={this.changeCurrentTime}
+                                    setBrushedRange={this.setBrushedRange}
+                                    ref={instance => { this.rightChart = instance; }} />
 
-                        <div>
-                            <label className="item">
-                                <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange} />
-                                <font color="#f28c36">加速度X</font>
-                            </label>
-                            <label className="item">
-                                <input id="ay_checkbox" type="checkbox" defaultChecked={this.state.ay} onChange={this.onChartItemsChange} />
-                                <font color="#e54520">加速度Y</font>
-                            </label>
-                            <label className="item">
-                                <input id="az_checkbox" type="checkbox" defaultChecked={this.state.az} onChange={this.onChartItemsChange} />
-                                <font color="#629ac9">加速度Z</font>
-                            </label>
-                            <label className="item">
-                                <input id="gx_checkbox" type="checkbox" defaultChecked={this.state.gx} onChange={this.onChartItemsChange} />
-                                <font color="&quot;#cfe43f">角速度X</font>
-                            </label>
-                            <label className="item">
-                                <input id="gy_checkbox" type="checkbox" defaultChecked={this.state.gy} onChange={this.onChartItemsChange} />
-                                <font color="#CCCC00">角速度Y</font>
-                            </label>
-                            <label className="item">
-                                <input id="gz_checkbox" type="checkbox" defaultChecked={this.state.gz} onChange={this.onChartItemsChange} />
-                                <font color="#8e37ca">角速度Z</font>
-                            </label>
-                            <label>
-                                タグ名:
+                                <div>
+                                    <label className="item">
+                                        <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange} />
+                                        <font color="#f28c36">加速度X</font>
+                                    </label>
+                                    <label className="item">
+                                        <input id="ay_checkbox" type="checkbox" defaultChecked={this.state.ay} onChange={this.onChartItemsChange} />
+                                        <font color="#e54520">加速度Y</font>
+                                    </label>
+                                    <label className="item">
+                                        <input id="az_checkbox" type="checkbox" defaultChecked={this.state.az} onChange={this.onChartItemsChange} />
+                                        <font color="#629ac9">加速度Z</font>
+                                    </label>
+                                    <label className="item">
+                                        <input id="gx_checkbox" type="checkbox" defaultChecked={this.state.gx} onChange={this.onChartItemsChange} />
+                                        <font color="&quot;#cfe43f">角速度X</font>
+                                    </label>
+                                    <label className="item">
+                                        <input id="gy_checkbox" type="checkbox" defaultChecked={this.state.gy} onChange={this.onChartItemsChange} />
+                                        <font color="#CCCC00">角速度Y</font>
+                                    </label>
+                                    <label className="item">
+                                        <input id="gz_checkbox" type="checkbox" defaultChecked={this.state.gz} onChange={this.onChartItemsChange} />
+                                        <font color="#8e37ca">角速度Z</font>
+                                    </label>
+                                    <label>
+                                        タグ名:
                                 <input type="text" name="tag_name_txt" ref="tagNameTxt" />
-                            </label>
-                            <label>
-                                <button onClick={this.createTag}> 作成 </button>
-                            </label>
-
-                        </div>
-                    </center>
+                                    </label>
+                                    <label>
+                                        <button onClick={this.createTag}> 作成 </button>
+                                    </label>
+                                </div>
+                            </center>
+                        </TabPanel>
+                        <TabPanel>
+                            <SensorGraph
+                                data='heartrate'
+                                changeCurrentTime={this.changeCurrentTime}
+                                setBrushedRange={this.setBrushedRange}
+                                ref={instance => { this.heartrateChart = instance; }} />
+                        </TabPanel>
+                    </Tabs>
                 </div>
                 <label>
                     <button onClick={this.openModal}>
