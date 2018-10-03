@@ -6,7 +6,7 @@ import { push } from 'react-router-redux';
 
 import { sanitizeProject } from '../utils/projectUtils';
 import { confirmDeleteProject } from '../actions/manager';
-import { StyledEditButton, StyledDeleteButton } from '../stylesheets/application/ProjectShow/ProjectSettings';
+import { StyledEditButton, StyledSensorButton, StyledDeleteButton } from '../stylesheets/application/ProjectShow/ProjectSettings';
 
 const debug = Debug('fabnavi:js:ProjectSettings');
 
@@ -65,7 +65,7 @@ const EditButton = ({ handleClick }) => {
 const EditSensorTagButton = ({ handleClick }) => {
     return (
         <div onClick={() => handleClick()}>
-            <StyledEditButton>Edit Sensor Tag</StyledEditButton>
+            <StyledSensorButton>Sensor</StyledSensorButton>
         </div>
     );
 };
