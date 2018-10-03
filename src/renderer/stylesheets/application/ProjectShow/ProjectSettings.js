@@ -27,6 +27,19 @@ export const StyledSensorButton = styled.button`
     })};
 `;
 
+export const StyledAutomaticTaggingButton = styled.button`
+    font-size: 40px;
+    border: none;
+    margin-top: 20px;
+    margin-right: 50px;
+    ${buttonProperties({
+        width: 205,
+        height: 100,
+        color: '#fff',
+        backgroundColor: colors.button.green
+    })};
+`;
+
 export const StyledDeleteButton = styled.button`
     font-size: 20px;
     border: 1px solid #555;

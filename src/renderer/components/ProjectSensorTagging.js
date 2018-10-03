@@ -330,7 +330,7 @@ class ProjectSensorTagging extends React.Component {
             <div className="taggingproject">
                 <style jsx>{`
                     .item{
-                        margin-right: 20px;
+                        margin-right: 30px;
                     }
                     .input-range[type="range"] {
                         -webkit-appearance: none;
@@ -365,6 +365,15 @@ class ProjectSensorTagging extends React.Component {
                     }
                     .parent{
                         display: flex;
+                    }
+                    .SensorGraphWrapper{
+                        margin-bottom: 10px;
+                    }
+                    .ItemsWrapper{
+                        margin-bottom: 20px;
+                    }
+                    .automatic-button{
+                        margin-left: 20px;
                     }
                 `}</style>
                 <center>
@@ -415,59 +424,66 @@ class ProjectSensorTagging extends React.Component {
                         </TabList>
                         <TabPanel>
                             <center>
-                                <div className={"parent"}>
-                                    <TagList
-                                        tagList={this.tags}
-                                        removeTag={this.removeTag}
-                                        ref={instance => { this.leftTagList = instance; }} />
-                                    <TagList
-                                        tagList={this.tags}
-                                        removeTag={this.removeTag}
-                                        ref={instance => { this.rightTagList = instance; }} />
+                                <div className={"SensorGraphWrapper"}>
+                                    <div className={"parent"}>
+                                        <TagList
+                                            tagList={this.tags}
+                                            removeTag={this.removeTag}
+                                            ref={instance => { this.leftTagList = instance; }} />
+                                        <TagList
+                                            tagList={this.tags}
+                                            removeTag={this.removeTag}
+                                            ref={instance => { this.rightTagList = instance; }} />
+                                    </div>
+                                    <div className={"parent"}>
+                                        <SensorGraph
+                                            data='left'
+                                            changeCurrentTime={this.changeCurrentTime}
+                                            setBrushedRange={this.setBrushedRange}
+                                            ref={instance => { this.leftChart = instance; }} />
+                                        <SensorGraph
+                                            data='right'
+                                            changeCurrentTime={this.changeCurrentTime}
+                                            setBrushedRange={this.setBrushedRange}
+                                            ref={instance => { this.rightChart = instance; }} />
+                                    </div>
                                 </div>
-                                <div className={"parent"}>
-                                    <SensorGraph
-                                        data='left'
-                                        changeCurrentTime={this.changeCurrentTime}
-                                        setBrushedRange={this.setBrushedRange}
-                                        ref={instance => { this.leftChart = instance; }} />
-                                    <SensorGraph
-                                        data='right'
-                                        changeCurrentTime={this.changeCurrentTime}
-                                        setBrushedRange={this.setBrushedRange}
-                                        ref={instance => { this.rightChart = instance; }} />
-                                </div>
-                                <div>
+                                <div className={"ItemsWrapper"}>
                                     <label className="item">
                                         <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange} />
-                                        <font color="#f28c36">加速度X</font>
+                                        <font color="#f28c36">ax</font>
                                     </label>
                                     <label className="item">
                                         <input id="ay_checkbox" type="checkbox" defaultChecked={this.state.ay} onChange={this.onChartItemsChange} />
-                                        <font color="#e54520">加速度Y</font>
+                                        <font color="#e54520">ay</font>
                                     </label>
                                     <label className="item">
                                         <input id="az_checkbox" type="checkbox" defaultChecked={this.state.az} onChange={this.onChartItemsChange} />
-                                        <font color="#629ac9">加速度Z</font>
+                                        <font color="#629ac9">az</font>
                                     </label>
                                     <label className="item">
                                         <input id="gx_checkbox" type="checkbox" defaultChecked={this.state.gx} onChange={this.onChartItemsChange} />
-                                        <font color="&quot;#cfe43f">角速度X</font>
+                                        <font color="&quot;#cfe43f">gx</font>
                                     </label>
                                     <label className="item">
                                         <input id="gy_checkbox" type="checkbox" defaultChecked={this.state.gy} onChange={this.onChartItemsChange} />
-                                        <font color="#CCCC00">角速度Y</font>
+                                        <font color="#CCCC00">gy</font>
                                     </label>
                                     <label className="item">
                                         <input id="gz_checkbox" type="checkbox" defaultChecked={this.state.gz} onChange={this.onChartItemsChange} />
-                                        <font color="#8e37ca">角速度Z</font>
+                                        <font color="#8e37ca">gz</font>
                                     </label>
                                     <label>
-                                        タグ名:
+                                        Tag:
                                 <input type="text" name="tag_name_txt" ref="tagNameTxt" />
                                     </label>
                                     <label>
-                                        <button onClick={this.createTag}> 作成 </button>
+                                        <button onClick={this.createTag}> Create </button>
+                                    </label>
+                                    <label>
+                                        <button onClick={this.openModal} className={"automatic-button"}>
+                                            Automatic tagging
+                                        </button>
                                     </label>
                                 </div>
                             </center>
@@ -481,11 +497,6 @@ class ProjectSensorTagging extends React.Component {
                         </TabPanel>
                     </Tabs>
                 </div>
-                <label>
-                    <button onClick={this.openModal}>
-                        自動タグ付け
-                    </button>
-                </label>
                 <SaveButton type="submit" onClick={this.onSubmit}>save</SaveButton>
 
                 <ReactModal
