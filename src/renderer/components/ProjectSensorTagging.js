@@ -138,15 +138,56 @@ class ProjectSensorTagging extends React.Component {
         }
 
         this.addAutoTag = () => {
-            this.state.tags = [{ "selection": [2 * 4.8, 8 * 4.8], "tag": "scissors" },
-            { "selection": [50 * 4.8, 60 * 4.8], "tag": "scissors" },
-            { "selection": [96 * 4.8, 103 * 4.8], "tag": "scissors" },
-            { "selection": [130 * 4.8, 137 * 4.8], "tag": "hammer" }]
+            // var tags = [{ "selection": [2, 8], "tag": "scissors" },
+            // { "selection": [50, 60], "tag": "scissors" },
+            // { "selection": [96, 103], "tag": "scissors" },
+            // { "selection": [130, 137], "tag": "hammer" }]
 
-            this.state.tags.forEach(tag => {
-                this.leftTagList.getWrappedInstance().appendTag(tag.selection, tag.tag)
-                this.rightTagList.getWrappedInstance().appendTag(tag.selection, tag.tag)
+            var tags = [{ "selection": [0, 2], "tag": "scissors" },
+            { "selection": [3, 4], "tag": "scissors" },
+            { "selection": [5, 6], "tag": "scissors" },
+            { "selection": [13, 14], "tag": "hammer" }]
+
+            tags.forEach(tag => {
+                var tags_id = this.getRandom();
+
+                this.setState({
+                    figures: this.state.figures.map((figure, i) => {
+                        if (i !== this.state.currentMovie) return figure;
+                        figure.chapters.push({
+                            id: null,
+                            start_sec: tag.selection[0],
+                            end_sec: tag.selection[1],
+                            name: tag.tag,
+                            _destroy: false
+                        });
+                        figure.captions.push({
+                            id: null,
+                            start_sec: tag.selection[0],
+                            end_sec: tag.selection[1],
+                            text: tag.tag,
+                            _destroy: false
+                        });
+                        return figure;
+                    })
+                });
+
+                this.state.tags.push({
+                    id: tags_id,
+                    tag: tag.tag,
+                    selection: [tag.selection[0], tag.selection[1]],
+                    tags_num: this.state.figures[this.state.currentMovie].chapters.length - 1,
+                })
+
+                var listtag = [tag.selection[0] * 570 / this.state.duration, tag.selection[1] * 570 / this.state.duration]
+
+                this.leftTagList.getWrappedInstance().appendTag(listtag, tag.tag, tags_id)
+                this.rightTagList.getWrappedInstance().appendTag(listtag, tag.tag, tags_id)
+
             });
+
+            this.leftTagList.getWrappedInstance().setState({ tags: this.state.tags })
+            this.rightTagList.getWrappedInstance().setState({ tags: this.state.tags })
 
             this.sleep(1000)
             this.closeModal()
