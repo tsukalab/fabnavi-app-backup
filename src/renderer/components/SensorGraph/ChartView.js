@@ -201,10 +201,10 @@ export default class ChartView {
                 .data(this.data)
                 .enter()
                 .append('circle')
-                .attr('r', '3px')
+                .attr('r', '20px')
                 .attr('cx', this.line[i].x())
                 .attr('cy', this.line[i].y())
-                .attr('fill', 'rgba(0,0,0,0)')
+                .attr('fill', 'rgba(100,100,100,255)')
                 .on('click', d => {
                     this.tapTime = d.date;
                     this.beginTime = this.data[0].date;

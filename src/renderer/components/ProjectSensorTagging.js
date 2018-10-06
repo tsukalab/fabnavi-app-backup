@@ -94,7 +94,7 @@ class ProjectSensorTagging extends React.Component {
                 this.leftChart.getWrappedInstance().moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
                 this.rightChart.getWrappedInstance().moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
             } else if (this.currentShowGraph == 1) {
-                this.heartrateChart.moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
+                this.heartrateChart.getWrappedInstance().moveTimeBar(this.refs.player.getCurrentTime(), this.state.duration)
             }
         }
 
@@ -137,17 +137,14 @@ class ProjectSensorTagging extends React.Component {
             }
         }
 
-        this.addAutoTag = () => {
-            // var tags = [{ "selection": [2, 8], "tag": "scissors" },
-            // { "selection": [50, 60], "tag": "scissors" },
-            // { "selection": [96, 103], "tag": "scissors" },
-            // { "selection": [130, 137], "tag": "hammer" }]
+        this.getAutoTags = () => {
+            const result = api.motionDetect(this.props.project.id)
+            result.then(response => {
+                this.addAutoTag(response.data.result)
+            });
+        }
 
-            var tags = [{ "selection": [0, 2], "tag": "scissors" },
-            { "selection": [3, 4], "tag": "scissors" },
-            { "selection": [5, 6], "tag": "scissors" },
-            { "selection": [13, 14], "tag": "hammer" }]
-
+        this.addAutoTag = (tags) => {
             tags.forEach(tag => {
                 var tags_id = this.getRandom();
 
@@ -156,16 +153,16 @@ class ProjectSensorTagging extends React.Component {
                         if (i !== this.state.currentMovie) return figure;
                         figure.chapters.push({
                             id: null,
-                            start_sec: tag.selection[0],
-                            end_sec: tag.selection[1],
-                            name: tag.tag,
+                            start_sec: tag.start_sec,
+                            end_sec: tag.end_sec,
+                            name: tag.name,
                             _destroy: false
                         });
                         figure.captions.push({
                             id: null,
-                            start_sec: tag.selection[0],
-                            end_sec: tag.selection[1],
-                            text: tag.tag,
+                            start_sec: tag.start_sec,
+                            end_sec: tag.end_sec,
+                            text: tag.name,
                             _destroy: false
                         });
                         return figure;
@@ -174,22 +171,21 @@ class ProjectSensorTagging extends React.Component {
 
                 this.state.tags.push({
                     id: tags_id,
-                    tag: tag.tag,
-                    selection: [tag.selection[0], tag.selection[1]],
+                    tag: tag.name,
+                    selection: [tag.start_sec, tag.end_sec],
                     tags_num: this.state.figures[this.state.currentMovie].chapters.length - 1,
                 })
 
-                var listtag = [tag.selection[0] * 570 / this.state.duration, tag.selection[1] * 570 / this.state.duration]
+                var listtag = [tag.start_sec * 570 / this.state.duration, tag.end_sec * 570 / this.state.duration]
 
-                this.leftTagList.getWrappedInstance().appendTag(listtag, tag.tag, tags_id)
-                this.rightTagList.getWrappedInstance().appendTag(listtag, tag.tag, tags_id)
+                this.leftTagList.getWrappedInstance().appendTag(listtag, tag.name, tags_id)
+                this.rightTagList.getWrappedInstance().appendTag(listtag, tag.name, tags_id)
 
             });
 
             this.leftTagList.getWrappedInstance().setState({ tags: this.state.tags })
             this.rightTagList.getWrappedInstance().setState({ tags: this.state.tags })
 
-            this.sleep(1000)
             this.closeModal()
         }
 
@@ -415,12 +411,14 @@ class ProjectSensorTagging extends React.Component {
                         <Duration seconds={this.state.duration} />
                     </div>
                 </center>
-
+                <p></p>
                 <div>
                     <Tabs onSelect={this.handleSelect} forceRenderTabPanel={true}>
                         <TabList>
+                            <center>
                             <Tab>motion</Tab>
                             <Tab>heart</Tab>
+                            </center>
                         </TabList>
                         <TabPanel>
                             <center>
@@ -489,11 +487,13 @@ class ProjectSensorTagging extends React.Component {
                             </center>
                         </TabPanel>
                         <TabPanel>
-                            <SensorGraph
-                                data='heartrate'
-                                changeCurrentTime={this.changeCurrentTime}
-                                setBrushedRange={this.setBrushedRange}
-                                ref={instance => { this.heartrateChart = instance; }} />
+                            <center>
+                                <SensorGraph
+                                    data='heartrate'
+                                    changeCurrentTime={this.changeCurrentTime}
+                                    setBrushedRange={this.setBrushedRange}
+                                    ref={instance => { this.heartrateChart = instance; }} />
+                            </center>
                         </TabPanel>
                     </Tabs>
                 </div>
@@ -508,7 +508,7 @@ class ProjectSensorTagging extends React.Component {
 
                     <h2>Do you want to add tags automatically?</h2>
                     <div align="right" >
-                        <button onClick={this.addAutoTag}>Yes</button>
+                        <button onClick={this.getAutoTags}>Yes</button>
                         <button className="no-button" onClick={this.closeModal}>No</button>
                     </div>
                 </ReactModal>
@@ -517,12 +517,6 @@ class ProjectSensorTagging extends React.Component {
     }
 
     componentDidMount() {
-        /*const result = api.motionDetect(
-            //"https://crest-multimedia-web.s3.amazonaws.com/tsuka/fabnavi5/uploads/sensor_info/data/256/2018-01-24_22_18_16_176_right.csv")
-            "https://crest-multimedia-web.s3.amazonaws.com/tsuka/fabnavi5/uploads/sensor_info/data/254/2018-01-24_22_13_07_175_right.csv")
-        result.then(response => {
-            console.log(response.data.result)
-        });*/
     }
 
     componentWillReceiveProps(props) {

@@ -117,9 +117,9 @@ class TagList extends React.Component {
 
   colorGen(tag) {
 
-    if (tag == "hammer") {
+    if (tag.indexOf('hammer') != -1) {
       return "#F6A336"
-    } else if (tag == "scissors") {
+    } else if (tag.indexOf('scissors') != -1) {
       return "#008000"
     }
 

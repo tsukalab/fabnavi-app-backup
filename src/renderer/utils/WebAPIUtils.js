@@ -389,6 +389,16 @@ class Server {
             .then(() => debug('sign out: success'))
             .catch(err => debug('sign out: failed', err));
     }
+
+    async motionDetect(id) {
+        debug(`motionDetect id:${id}`);
+        const options = {
+            responseType: 'json',
+            type: 'GET',
+            url: `http://192.168.134.142:3000/mock/detection/${id}`
+        };
+        return axios(options);
+    }
 }
 
 const api = new Server();

@@ -30,7 +30,12 @@ class SensorGraph extends React.Component {
             svg: null,
             data: null,
             svg_list: [],
-
+            ax: [],
+            ay: [],
+            az: [],
+            gx: [],
+            gy: [],
+            gz: [],
         }
 
         this.line = [];
@@ -81,6 +86,7 @@ class SensorGraph extends React.Component {
 
     renderHeartRateGraph = (data_url) => {
         this.state.data = this.loadCSV(data_url)
+        this.drawHeartRate();
     }
 
     draw() {
@@ -184,13 +190,40 @@ class SensorGraph extends React.Component {
             .attr('height', this.height + 7);
 
         for (i = 0; i < 6; i++) {
-            this.state.svg.selectAll('circle')
+            this.state.svg.selectAll('.circle')
                 .data(this.state.data)
                 .enter()
                 .append('circle')
                 .attr('r', '3px')
-                .attr('cx', this.line[i].x())
-                .attr('cy', this.line[i].y())
+                .attr('cx', d => { return this.x(d.date) })
+                .attr('cy', d => {
+
+                    switch (i) {
+                        case 0:
+                            return this.y(d.ax / 3);
+                            break;
+
+                        case 1:
+                            return this.y(d.ay / 3);
+                            break;
+
+                        case 2:
+                            return this.y(d.az / 3);
+                            break;
+
+                        case 3:
+                            return this.y(d.gx / 3);
+                            break;
+
+                        case 4:
+                            return this.y(d.gy / 3);
+                            break;
+
+                        case 5:
+                            return this.y(d.gz / 3);
+                            break;
+                    }
+                })
                 .attr('fill', 'rgba(0,0,0,0)')
                 .on('click', d => {
                     const tapTime = d.date;
@@ -200,6 +233,7 @@ class SensorGraph extends React.Component {
                     this.props.changeCurrentTime(TapTimeSeconds - beginTimeSeconds);
                 })
         }
+
     }
 
     brushed(brush, x) {
@@ -208,7 +242,7 @@ class SensorGraph extends React.Component {
                 this.props.setBrushedRange(d3.event.selection || x.range());
                 //console.log(this.s.map(x.invert, x)[0].toLocaleString() + ':' + this.s.map(x.invert, x)[0].getMilliseconds());
                 //console.log(this.s.map(x.invert, x)[1].toLocaleString() + ':' + this.s.map(x.invert, x)[1].getMilliseconds());
-            }else {
+            } else {
                 this.props.setBrushedRange(null);
             }
         }
