@@ -395,7 +395,7 @@ class Server {
         const options = {
             responseType: 'json',
             type: 'GET',
-            url: `http://192.168.134.142:3000/mock/detection/${id}`
+            url: `http://10.71.11.139:3000/mock/detection/${id}`
         };
         return axios(options);
     }

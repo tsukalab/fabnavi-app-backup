@@ -117,11 +117,28 @@ class TagList extends React.Component {
 
   colorGen(tag) {
 
-    if (tag.indexOf('hammer') != -1) {
+    if (tag.indexOf('はさみ') != -1 || tag.indexOf('scissors') != -1) {
       return "#F6A336"
-    } else if (tag.indexOf('scissors') != -1) {
+    } else if (tag.indexOf('金槌') != -1 || tag.indexOf('hammer') != -1) {
       return "#008000"
     }
+    else if (tag.indexOf('組立') != -1 || tag.indexOf('hammer') != -1) {
+      return "#00bfff"
+    }else if (tag.indexOf('ワイヤー') != -1) {
+      return "#0000d2"
+    }else if (tag.indexOf('スパナ') != -1) {
+      return "#F0E68C"
+    }else if (tag.indexOf('六角') != -1) {
+      return "#8C19E4"
+    }else if (tag.indexOf('彫刻刀') != -1) {
+      return "#E21A2B"
+    }else if(tag.indexOf('ニッパー') != -1){
+      return "#6DF60B"
+    }else if(tag.indexOf('ドライバー') != -1){
+      return "#39EEF4"
+    }
+    
+
 
 
     return '#' + Math.floor(Math.random() * 16777215).toString(16);

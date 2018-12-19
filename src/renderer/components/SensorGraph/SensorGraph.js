@@ -240,8 +240,9 @@ class SensorGraph extends React.Component {
         if (d3.event.selection != null) {
             if (d3.event.sourceEvent.type == 'mouseup') {
                 this.props.setBrushedRange(d3.event.selection || x.range());
-                //console.log(this.s.map(x.invert, x)[0].toLocaleString() + ':' + this.s.map(x.invert, x)[0].getMilliseconds());
-                //console.log(this.s.map(x.invert, x)[1].toLocaleString() + ':' + this.s.map(x.invert, x)[1].getMilliseconds());
+                this.s = d3.event.selection || x.range();
+                console.log(this.s.map(x.invert, x)[0].toLocaleString() + ':' + this.s.map(x.invert, x)[0].getMilliseconds());
+                console.log(this.s.map(x.invert, x)[1].toLocaleString() + ':' + this.s.map(x.invert, x)[1].getMilliseconds());
             } else {
                 this.props.setBrushedRange(null);
             }
@@ -461,9 +462,17 @@ class SensorGraph extends React.Component {
             if (props.data === 'heartrate') {
                 this.renderHeartRateGraph(props.project.sensor_infos[0].data.url);
             } else if (props.data === 'left') {
-                this.renderGraph(props.project.sensor_infos[0].data.url);
+                if(props.project.sensor_infos[0].data.url.indexOf("left") >= 0){
+                    this.renderGraph(props.project.sensor_infos[0].data.url);
+                }else {
+                    this.renderGraph(props.project.sensor_infos[1].data.url);
+                }
             } else if (props.data === 'right') {
-                this.renderGraph(props.project.sensor_infos[1].data.url);
+                if(props.project.sensor_infos[0].data.url.indexOf("right") >= 0){
+                    this.renderGraph(props.project.sensor_infos[0].data.url);
+                }else {
+                    this.renderGraph(props.project.sensor_infos[1].data.url);
+                }
             }
         }
     }

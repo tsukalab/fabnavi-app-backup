@@ -18,8 +18,7 @@ import {
     StyledDescription,
     StatusFrame,
     StatusText,
-    TitleFrame,
-    PrivateNotation
+    PrivateNotation,
 } from '../stylesheets/application/ProjectShow/StyledProjectDetail';
 
 const debug = Debug('fabnavi:jsx:ProjectDetail');
@@ -36,27 +35,9 @@ export class ProjectDetail extends React.Component {
         return (
             <div>
                 {project ? (
-                    <StyledDetailFrame>
-                        <ProjectTitle lang="ja">{project.name} {isPrivate && <PrivateNotation>Private Project</PrivateNotation>}</ProjectTitle>
+                    <div>
                         <Player />
-                        <ContentsFrame>
-                            <DescriptionFrame>
-                                <StyledHead>Description</StyledHead>
-                                <StyledDescription>{project.description}</StyledDescription>
-                            </DescriptionFrame>
-                            <StatusFrame>
-                                <StyledHead>Author</StyledHead>
-                                <StatusText>{project.user.nickname}</StatusText>
-                                <StyledHead>Created Date</StyledHead>
-                                <StatusText>{project.date}</StatusText>
-                            </StatusFrame>
-                        </ContentsFrame>
-                        <CaptionList
-                            figures={project.content.map(content => content.figure).sort((fig1, fig2) => fig1.position - fig2.position)}
-                            contentType={this.props.contentType}
-                        />
-                        {this.props.showDeleteConfirmation ? <DeleteModal /> : <span />}
-                    </StyledDetailFrame>
+                    </div>
                 ) : (
                     <div> loading project... </div>
                 )}

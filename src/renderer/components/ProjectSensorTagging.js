@@ -326,7 +326,7 @@ class ProjectSensorTagging extends React.Component {
             <div className="taggingproject">
                 <style jsx>{`
                     .item{
-                        margin-right: 30px;
+                        margin-right: 20px;
                     }
                     .input-range[type="range"] {
                         -webkit-appearance: none;
@@ -449,34 +449,34 @@ class ProjectSensorTagging extends React.Component {
                                 <div className={"ItemsWrapper"}>
                                     <label className="item">
                                         <input id="ax_checkbox" type="checkbox" defaultChecked={this.state.ax} onChange={this.onChartItemsChange} />
-                                        <font color="#f28c36">ax</font>
+                                        <font color="#f28c36">加速度X</font>
                                     </label>
                                     <label className="item">
                                         <input id="ay_checkbox" type="checkbox" defaultChecked={this.state.ay} onChange={this.onChartItemsChange} />
-                                        <font color="#e54520">ay</font>
+                                        <font color="#e54520">加速度Y</font>
                                     </label>
                                     <label className="item">
                                         <input id="az_checkbox" type="checkbox" defaultChecked={this.state.az} onChange={this.onChartItemsChange} />
-                                        <font color="#629ac9">az</font>
+                                        <font color="#629ac9">加速度Z</font>
                                     </label>
                                     <label className="item">
                                         <input id="gx_checkbox" type="checkbox" defaultChecked={this.state.gx} onChange={this.onChartItemsChange} />
-                                        <font color="&quot;#cfe43f">gx</font>
+                                        <font color="#cfe43f">角速度X</font>
                                     </label>
                                     <label className="item">
                                         <input id="gy_checkbox" type="checkbox" defaultChecked={this.state.gy} onChange={this.onChartItemsChange} />
-                                        <font color="#CCCC00">gy</font>
+                                        <font color="#CCCC00">角速度Y</font>
                                     </label>
                                     <label className="item">
                                         <input id="gz_checkbox" type="checkbox" defaultChecked={this.state.gz} onChange={this.onChartItemsChange} />
-                                        <font color="#8e37ca">gz</font>
+                                        <font color="#8e37ca">角速度Z</font>
                                     </label>
                                     <label>
-                                        Tag:
+                                        タグ名:
                                 <input type="text" name="tag_name_txt" ref="tagNameTxt" />
                                     </label>
                                     <label>
-                                        <button onClick={this.createTag}> Create </button>
+                                        <button onClick={this.createTag}> 作成 </button>
                                     </label>
                                     <label>
                                         <button onClick={this.openModal} className={"automatic-button"}>

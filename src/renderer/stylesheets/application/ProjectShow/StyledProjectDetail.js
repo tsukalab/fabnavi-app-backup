@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components';
 
+import { colors } from '../../common/colors';
+
 export const StyledDetailFrame = styled.div`
     display: flex;
     flex-direction: column;
@@ -17,6 +19,8 @@ export const TitleFrame = styled.div`
 export const ProjectTitle = styled.p`
     font-size: 38px;
     font-weight: 700;
+    height: 2.5em;
+    line-height: 1.25em;
     color: #000;
     margin: 0;
     font-feature-settings: 'palt';
@@ -37,12 +41,16 @@ export const ContentsFrame = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    border-top: 3px solid ${colors.border.gray};
+    margin-top: 100px;
+    margin-bottom: 50px;
 `;
 
 export const DescriptionFrame = styled.div`
     width: 83%;
     display: flex;
     flex-direction: column;
+    margin-top: 45px;
 `;
 
 export const StyledHead = styled.h3`
@@ -55,11 +63,13 @@ export const StyledHead = styled.h3`
 export const StyledDescription = styled.p`
     font-size: 22px;
     color: #000;
+    margin: 30px 38px 0 0;
 `;
 
 export const StatusFrame = styled.div`
     display: flex;
     flex-direction: column;
+    margin-top: 45px;
 `;
 
 export const StatusText = styled.p`
